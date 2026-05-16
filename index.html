@@ -1,0 +1,708 @@
+import React, { useState, useEffect } from 'react';
+import { 
+  Menu, X, ChevronRight, BarChart3, Camera, Globe, 
+  DollarSign, Monitor, CheckCircle, ArrowRight, MapPin, 
+  Phone, Mail, Instagram, Linkedin, Calculator, MessageCircle, AlertTriangle
+} from 'lucide-react';
+
+// --- CONFIGURACIÓN DE COLORES Y MARCA ---
+const BRAND = {
+  colors: {
+    primary: '#2D5E4F',    // Verde oscuro - autoridad
+    secondary: '#4A8067',  // Verde medio - confianza
+    tertiary: '#7BAF9A',   // Verde claro
+    dark: '#1C2B30',       // Gris oscuro - profesionalismo
+    light: '#F5F7F6',      // Blancos/Gris claro
+    accent: '#C8E6D4',     // Highlights
+  }
+};
+
+// --- SIMULADOR DE ANALÍTICA (Event Tracking) ---
+const trackEvent = (category, action, label) => {
+  console.log(`[Analytics Event] Categoria: ${category} | Accion: ${action} | Etiqueta: ${label}`);
+  // En producción, esto sería: window.gtag('event', action, { event_category: category, event_label: label });
+};
+
+// --- DATA MOCK ---
+const SERVICES = [
+  {
+    id: 'gestion',
+    icon: <BarChart3 className="w-8 h-8" />,
+    title: 'Gestión y Control de Proyectos',
+    desc: 'Seguimiento estratégico de cronogramas, avance físico y comportamiento operativo general de la obra.'
+  },
+  {
+    id: 'fotogrametria',
+    icon: <Camera className="w-8 h-8" />,
+    title: 'Fotogrametría y Levantamientos',
+    desc: 'Captura aérea para seguimiento visual, levantamientos técnicos y monitoreo de avance con drones.'
+  },
+  {
+    id: 'recorridos',
+    icon: <Globe className="w-8 h-8" />,
+    title: 'Recorridos Virtuales 360°',
+    desc: 'Visualización interactiva para documentación, seguimiento remoto y registro histórico.'
+  },
+  {
+    id: 'costos',
+    icon: <DollarSign className="w-8 h-8" />,
+    title: 'Control de Costos',
+    desc: 'Seguimiento presupuesto vs ejecución real, control de consumos, cubicaciones y análisis financiero.'
+  },
+  {
+    id: 'digital',
+    icon: <Monitor className="w-8 h-8" />,
+    title: 'Gestión Digital Centralizada',
+    desc: 'Herramientas digitales para centralización, visualización y control de información técnica.'
+  }
+];
+
+const PAIN_POINTS = [
+  { title: 'Desviaciones de costos', desc: 'Sobrecostos no detectados a tiempo que reducen la rentabilidad.' },
+  { title: 'Atrasos en cronogramas', desc: 'Falta de control visible que genera retrasos en las entregas.' },
+  { title: 'Desperdicio de recursos', desc: 'Materiales mal gestionados por falta de supervisión técnica.' },
+  { title: 'Información dispersa', desc: 'Falta de trazabilidad que dificulta la toma de decisiones.' }
+];
+
+// --- COMPONENTES UI COMPARTIDOS ---
+const Button = ({ children, variant = 'primary', onClick, className = '', fullWidth = false }) => {
+  const baseStyles = "inline-flex items-center justify-center px-6 py-3 rounded-md font-medium transition-all duration-300 ease-in-out transform hover:-translate-y-1";
+  const variants = {
+    primary: "bg-[#2D5E4F] text-white hover:bg-[#1C2B30] shadow-lg hover:shadow-xl",
+    secondary: "bg-transparent border-2 border-[#2D5E4F] text-[#2D5E4F] hover:bg-[#2D5E4F] hover:text-white",
+    white: "bg-white text-[#2D5E4F] hover:bg-gray-100 shadow-lg",
+    outlineWhite: "bg-transparent border-2 border-white text-white hover:bg-white hover:text-[#2D5E4F]"
+  };
+  
+  return (
+    <button 
+      onClick={onClick} 
+      className={`${baseStyles} ${variants[variant]} ${fullWidth ? 'w-full' : ''} ${className}`}
+    >
+      {children}
+    </button>
+  );
+};
+
+// --- SECCIONES PRINCIPALES ---
+
+const Hero = ({ navigate }) => (
+  <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-[#1C2B30]">
+    {/* Background Image/Overlay Simulation */}
+    <div className="absolute inset-0 z-0 opacity-20">
+      <div className="absolute inset-0 bg-gradient-to-r from-[#1C2B30] to-transparent z-10" />
+      <img 
+        src="https://images.unsplash.com/photo-1541881451970-13e51f5c6e83?q=80&w=2000&auto=format&fit=crop" 
+        alt="Proyecto de construcción de alta escala" 
+        className="w-full h-full object-cover"
+      />
+    </div>
+    
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="max-w-3xl">
+        <span className="inline-block py-1 px-3 rounded-full bg-[#4A8067] text-white text-sm font-semibold mb-6 tracking-wide uppercase">
+          Ingeniería • Tecnología • Control
+        </span>
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
+          Tus proyectos bajo control. <br/>
+          <span className="text-[#7BAF9A]">Desde el primer día hasta la entrega.</span>
+        </h1>
+        <p className="text-lg md:text-xl text-gray-300 mb-10 max-w-2xl leading-relaxed">
+          Control estratégico de proyectos para desarrolladores y fiduciarias. 
+          Más visibilidad, menos riesgos, mejores resultados.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-4">
+          <Button 
+            variant="primary"
+            onClick={() => {
+              trackEvent('Conversion', 'Click CTA Hero', 'Solicitar Diagnostico');
+              navigate('contact');
+            }}
+          >
+            Solicitar diagnóstico gratuito
+            <ArrowRight className="ml-2 w-5 h-5" />
+          </Button>
+          <Button 
+            variant="outlineWhite"
+            onClick={() => {
+              trackEvent('Navigation', 'Click CTA Hero Secundario', 'Ver Servicios');
+              navigate('services');
+            }}
+          >
+            Ver nuestros servicios
+          </Button>
+        </div>
+      </div>
+    </div>
+  </section>
+);
+
+const PainPoints = () => (
+  <section className="py-20 bg-white">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="text-center max-w-3xl mx-auto mb-16">
+        <h2 className="text-3xl md:text-4xl font-bold text-[#1C2B30] mb-4">El sector construcción es complejo. <br/>Tu gestión no debería serlo.</h2>
+        <p className="text-gray-600 text-lg">Las deficiencias en la ejecución cuestan dinero y tiempo. Identificamos y mitigamos los principales riesgos operativos.</p>
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        {PAIN_POINTS.map((point, idx) => (
+          <div key={idx} className="bg-[#F5F7F6] p-8 rounded-xl border border-gray-100 hover:shadow-lg transition-shadow">
+            <AlertTriangle className="w-10 h-10 text-[#4A8067] mb-4" />
+            <h3 className="text-xl font-bold text-[#1C2B30] mb-3">{point.title}</h3>
+            <p className="text-gray-600">{point.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+);
+
+const ServicesOverview = ({ navigate }) => (
+  <section className="py-20 bg-[#F5F7F6]">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="flex flex-col md:flex-row justify-between items-end mb-12">
+        <div className="max-w-2xl">
+          <span className="text-[#4A8067] font-semibold tracking-wider uppercase">Lo que hacemos</span>
+          <h2 className="text-3xl md:text-4xl font-bold text-[#1C2B30] mt-2 mb-4">Soluciones técnicas adaptadas a cada proyecto</h2>
+        </div>
+        <button 
+          onClick={() => navigate('services')}
+          className="text-[#2D5E4F] font-semibold hover:text-[#4A8067] flex items-center group hidden md:flex"
+        >
+          Ver todos los servicios
+          <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+        </button>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {SERVICES.map((srv, idx) => (
+          <div 
+            key={idx} 
+            className="bg-white p-8 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 group cursor-pointer"
+            onClick={() => {
+              trackEvent('Navigation', 'Click Card Servicio', srv.title);
+              navigate('contact'); // Ideally would go to service detail
+            }}
+          >
+            <div className="w-14 h-14 bg-[#E8F2EC] rounded-lg flex items-center justify-center text-[#2D5E4F] mb-6 group-hover:bg-[#2D5E4F] group-hover:text-white transition-colors">
+              {srv.icon}
+            </div>
+            <h3 className="text-xl font-bold text-[#1C2B30] mb-3">{srv.title}</h3>
+            <p className="text-gray-600 mb-6 line-clamp-3">{srv.desc}</p>
+            <div className="text-[#4A8067] font-medium flex items-center group-hover:text-[#2D5E4F]">
+              Saber más <ChevronRight className="w-4 h-4 ml-1" />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+);
+
+const RiskCalculator = () => {
+  const [step, setStep] = useState(0);
+  const [loading, setLoading] = useState(false);
+  
+  const questions = [
+    { q: "¿Cuentas con un control estricto de presupuesto vs. ejecución real?", a: ["Sí, al día", "Parcialmente", "No, es un reto actual"] },
+    { q: "¿Tienes visibilidad centralizada del avance físico de la obra?", a: ["Sí, con dashboards", "Solo reportes en PDF/Excel", "No tengo visibilidad clara"] },
+    { q: "¿Utilizas herramientas como drones o recorridos 360 para supervisión remota?", a: ["Sí", "Estamos evaluándolo", "No, supervisión tradicional"] }
+  ];
+
+  const handleNext = () => {
+    trackEvent('Engagement', 'Calculator Step', `Step ${step + 1}`);
+    if (step < questions.length) {
+      setStep(step + 1);
+    }
+  };
+
+  const calculateResult = () => {
+    setLoading(true);
+    trackEvent('Conversion', 'Calculator Complete', 'Generando Resultado');
+    setTimeout(() => {
+      setLoading(false);
+      setStep(step + 1);
+    }, 1500);
+  };
+
+  return (
+    <section className="py-24 bg-[#2D5E4F] text-white relative overflow-hidden">
+      {/* Decorative bg */}
+      <div className="absolute top-0 right-0 -mt-20 -mr-20 w-96 h-96 bg-[#4A8067] rounded-full blur-3xl opacity-50"></div>
+      <div className="absolute bottom-0 left-0 -mb-20 -ml-20 w-80 h-80 bg-[#1C2B30] rounded-full blur-3xl opacity-50"></div>
+
+      <div className="max-w-4xl mx-auto px-4 relative z-10 text-center">
+        <Calculator className="w-12 h-12 text-[#7BAF9A] mx-auto mb-6" />
+        <h2 className="text-3xl md:text-4xl font-bold mb-4">¿Conoces el nivel de riesgo en tu obra actual?</h2>
+        <p className="text-[#C8E6D4] text-lg mb-10 max-w-2xl mx-auto">Responde 3 breves preguntas para identificar áreas críticas de optimización en tu proyecto constructivo.</p>
+
+        <div className="bg-white text-left rounded-2xl shadow-2xl p-8 max-w-2xl mx-auto text-[#1C2B30]">
+          {step < questions.length ? (
+            <div>
+              <span className="text-sm font-bold text-[#4A8067] uppercase tracking-wider mb-2 block">
+                Pregunta {step + 1} de {questions.length}
+              </span>
+              <h3 className="text-2xl font-bold mb-6">{questions[step].q}</h3>
+              <div className="space-y-3">
+                {questions[step].a.map((ans, idx) => (
+                  <button 
+                    key={idx}
+                    onClick={() => step === questions.length - 1 ? calculateResult() : handleNext()}
+                    className="w-full text-left px-6 py-4 rounded-lg border border-gray-200 hover:border-[#2D5E4F] hover:bg-[#F5F7F6] font-medium transition-colors"
+                  >
+                    {ans}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ) : loading ? (
+             <div className="text-center py-12">
+               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#2D5E4F] mx-auto mb-4"></div>
+               <h3 className="text-xl font-bold text-[#1C2B30]">Analizando respuestas...</h3>
+             </div>
+          ) : (
+            <div className="text-center py-6">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-orange-100 text-orange-600 rounded-full mb-6">
+                <AlertTriangle className="w-8 h-8" />
+              </div>
+              <h3 className="text-2xl font-bold mb-4">Riesgo Operativo Detectado: Medio-Alto</h3>
+              <p className="text-gray-600 mb-8">
+                Las deficiencias en control de costos y trazabilidad de información pueden generar hasta un 15% de desviación presupuestal. VERTICE puede ayudarte a centralizar y controlar estos procesos.
+              </p>
+              <Button onClick={() => trackEvent('Conversion', 'Click CTA Calculator', 'Solicitar Asesoria')} fullWidth>
+                Solicitar Asesoría Personalizada
+              </Button>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const ContactSection = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    trackEvent('Conversion', 'Form Submit', 'Contacto General');
+    alert("Mensaje enviado con éxito. Un especialista de VERTICE le contactará en menos de 24 horas.");
+  };
+
+  return (
+    <section className="py-20 bg-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+          
+          {/* Info Contacto */}
+          <div>
+            <span className="text-[#4A8067] font-semibold tracking-wider uppercase mb-2 block">Hablemos de su proyecto</span>
+            <h2 className="text-3xl md:text-4xl font-bold text-[#1C2B30] mb-6">Estamos listos para optimizar su inversión.</h2>
+            <p className="text-gray-600 text-lg mb-10">
+              Contáctenos para realizar un diagnóstico inicial sin compromiso. Descubra cómo nuestra metodología de control puede reducir riesgos y aumentar la eficiencia de su obra.
+            </p>
+            
+            <div className="space-y-6">
+              <div className="flex items-start">
+                <div className="bg-[#E8F2EC] p-3 rounded-lg text-[#2D5E4F] mr-4">
+                  <MapPin className="w-6 h-6" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-[#1C2B30]">Ubicación</h4>
+                  <p className="text-gray-600">Carretera Don Pedro, Las Dianas,<br/>Santiago, Rep. Dominicana</p>
+                </div>
+              </div>
+              <div className="flex items-start">
+                <div className="bg-[#E8F2EC] p-3 rounded-lg text-[#2D5E4F] mr-4">
+                  <Phone className="w-6 h-6" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-[#1C2B30]">Teléfono</h4>
+                  <p className="text-gray-600">(809) 630-7333</p>
+                </div>
+              </div>
+              <div className="flex items-start">
+                <div className="bg-[#E8F2EC] p-3 rounded-lg text-[#2D5E4F] mr-4">
+                  <Mail className="w-6 h-6" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-[#1C2B30]">Correo Electrónico</h4>
+                  <p className="text-gray-600">info.verticegroup@gmail.com</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Formulario (Lead Gen) */}
+          <div className="bg-[#F5F7F6] p-8 md:p-10 rounded-2xl shadow-sm border border-gray-100">
+            <h3 className="text-2xl font-bold text-[#1C2B30] mb-6">Solicitar Diagnóstico</h3>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Nombre completo *</label>
+                  <input required type="text" className="w-full px-4 py-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-[#2D5E4F] focus:border-transparent outline-none" placeholder="Ing. Juan Pérez" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Empresa / Fiduciaria *</label>
+                  <input required type="text" className="w-full px-4 py-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-[#2D5E4F] focus:border-transparent outline-none" placeholder="Constructora XYZ" />
+                </div>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Teléfono / WhatsApp *</label>
+                  <input required type="tel" className="w-full px-4 py-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-[#2D5E4F] focus:border-transparent outline-none" placeholder="(809) 000-0000" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Servicio de interés</label>
+                  <select className="w-full px-4 py-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-[#2D5E4F] focus:border-transparent outline-none bg-white">
+                    <option>Gestión y Control Integral</option>
+                    <option>Control de Costos</option>
+                    <option>Fotogrametría y Drones</option>
+                    <option>Recorridos 360°</option>
+                    <option>Aún no estoy seguro</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Cuéntenos brevemente sobre su proyecto</label>
+                <textarea rows="4" className="w-full px-4 py-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-[#2D5E4F] focus:border-transparent outline-none" placeholder="Tipo de obra, etapa actual, problemas principales..."></textarea>
+              </div>
+              <Button fullWidth className="mt-4">
+                Enviar Solicitud
+              </Button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+
+// --- ESTRUCTURA PRINCIPAL (APP) ---
+
+export default function App() {
+  const [currentPage, setCurrentPage] = useState('home');
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  // SEO Simulator
+  useEffect(() => {
+    const seoMeta = {
+      home: { title: "VERTICE MPC Group | Control Estratégico de Proyectos de Construcción", desc: "Expertos en gestión, control y análisis integral de proyectos en República Dominicana. Fotogrametría, costos, recorridos 360." },
+      services: { title: "Nuestros Servicios | VERTICE MPC Group", desc: "Soluciones técnicas: Gestión de proyectos, control de costos, fotogrametría con drones y gestión digital." },
+      about: { title: "Quiénes Somos | VERTICE MPC Group", desc: "Conoce el origen, misión y valores de Vertice MPC Group. Innovación y excelencia en el sector construcción." },
+      contact: { title: "Contacto | VERTICE MPC Group", desc: "Solicita un diagnóstico gratuito para tu proyecto de construcción. Estamos en Santiago, República Dominicana." }
+    };
+    
+    document.title = seoMeta[currentPage]?.title || seoMeta.home.title;
+    
+    // Simulating changing meta description
+    let metaDesc = document.querySelector('meta[name="description"]');
+    if(!metaDesc) {
+      metaDesc = document.createElement('meta');
+      metaDesc.name = "description";
+      document.head.appendChild(metaDesc);
+    }
+    metaDesc.content = seoMeta[currentPage]?.desc || seoMeta.home.desc;
+
+    // Track pageview
+    trackEvent('Sistema', 'Pageview', currentPage);
+    
+    window.scrollTo(0, 0);
+  }, [currentPage]);
+
+  const navigate = (page) => {
+    setCurrentPage(page);
+    setIsMenuOpen(false);
+  };
+
+  const navLinks = [
+    { id: 'home', label: 'Inicio' },
+    { id: 'about', label: 'Nosotros' },
+    { id: 'services', label: 'Servicios' },
+    { id: 'contact', label: 'Contacto' }
+  ];
+
+  return (
+    <div className="min-h-screen bg-white font-sans text-gray-800 flex flex-col">
+      
+      {/* HEADER & NAVBAR */}
+      <header className="fixed w-full z-50 bg-white/95 backdrop-blur-sm shadow-sm border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-20">
+            {/* Logo */}
+            <div 
+              className="flex items-center cursor-pointer" 
+              onClick={() => navigate('home')}
+            >
+              {/* Logo icon simulation based on PDF (Triangle) */}
+              <div className="relative w-10 h-10 mr-3">
+                <div className="absolute inset-0 bg-gradient-to-tr from-[#2D5E4F] to-[#7BAF9A] opacity-90" style={{ clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)' }}></div>
+                <div className="absolute inset-0 bg-[#1C2B30] opacity-40" style={{ clipPath: 'polygon(50% 0%, 50% 100%, 100% 100%)' }}></div>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-2xl font-black text-[#1C2B30] tracking-wider leading-none">VERTICE</span>
+                <span className="text-[10px] text-[#4A8067] font-semibold tracking-[0.2em] leading-tight">MPC GROUP</span>
+              </div>
+            </div>
+
+            {/* Desktop Menu */}
+            <nav className="hidden md:flex items-center space-x-8">
+              {navLinks.map(link => (
+                <button
+                  key={link.id}
+                  onClick={() => navigate(link.id)}
+                  className={`text-sm font-medium transition-colors hover:text-[#2D5E4F] ${
+                    currentPage === link.id ? 'text-[#2D5E4F] border-b-2 border-[#2D5E4F]' : 'text-gray-600'
+                  }`}
+                >
+                  {link.label}
+                </button>
+              ))}
+              <Button 
+                variant="primary" 
+                onClick={() => {
+                  trackEvent('Conversion', 'Click Nav CTA', 'Diagnostico');
+                  navigate('contact');
+                }}
+                className="py-2 px-4 text-sm"
+              >
+                Diagnóstico Gratuito
+              </Button>
+            </nav>
+
+            {/* Mobile menu button */}
+            <div className="md:hidden flex items-center">
+              <button 
+                onClick={() => setIsMenuOpen(!isMenuOpen)} 
+                className="text-[#1C2B30] hover:text-[#2D5E4F]"
+                aria-label="Menu principal"
+              >
+                {isMenuOpen ? <X className="h-7 w-7" /> : <Menu className="h-7 w-7" />}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile Menu Panel */}
+        {isMenuOpen && (
+          <div className="md:hidden bg-white border-b border-gray-100 shadow-xl absolute w-full">
+            <div className="px-4 pt-2 pb-6 space-y-1">
+              {navLinks.map(link => (
+                <button
+                  key={link.id}
+                  onClick={() => navigate(link.id)}
+                  className={`block w-full text-left px-3 py-4 text-base font-medium border-b border-gray-50 ${
+                    currentPage === link.id ? 'text-[#2D5E4F] font-bold' : 'text-gray-600'
+                  }`}
+                >
+                  {link.label}
+                </button>
+              ))}
+              <div className="pt-4">
+                <Button fullWidth onClick={() => navigate('contact')}>Diagnóstico Gratuito</Button>
+              </div>
+            </div>
+          </div>
+        )}
+      </header>
+
+      {/* MAIN CONTENT AREA */}
+      <main className="flex-grow pt-20">
+        
+        {currentPage === 'home' && (
+          <>
+            <Hero navigate={navigate} />
+            <PainPoints />
+            <ServicesOverview navigate={navigate} />
+            <RiskCalculator />
+            
+            {/* Sección Rápida de Beneficios (Desde PDF Pag 8) */}
+            <section className="py-20 bg-white">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h2 className="text-3xl font-bold text-[#1C2B30] mb-12">Por qué los desarrolladores confían en nosotros</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                  {[
+                    {t: 'Control del Proyecto', d: 'Seguimiento continuo de la ejecución y costos.'},
+                    {t: 'Gestión de Información', d: 'Trazabilidad y organización documental técnica.'},
+                    {t: 'Monitoreo Visual', d: 'Seguimiento visual continuo y registro histórico.'},
+                    {t: 'Fortalecimiento', d: 'Mejora en los procesos internos de supervisión.'}
+                  ].map((b, i) => (
+                    <div key={i} className="flex flex-col items-center">
+                      <div className="w-16 h-16 bg-[#F5F7F6] rounded-full flex items-center justify-center mb-4 text-[#4A8067]">
+                        <CheckCircle className="w-8 h-8" />
+                      </div>
+                      <h4 className="font-bold text-[#1C2B30] mb-2">{b.t}</h4>
+                      <p className="text-gray-600 text-sm">{b.d}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+          </>
+        )}
+
+        {currentPage === 'about' && (
+          <section className="py-20 bg-white">
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+              <span className="text-[#4A8067] font-semibold tracking-wider uppercase mb-2 block text-center">Perfil Empresarial</span>
+              <h1 className="text-4xl font-bold text-[#1C2B30] mb-12 text-center">Nuestra visión y origen</h1>
+              
+              <div className="prose prose-lg max-w-none text-gray-600 space-y-8">
+                <div className="bg-[#F5F7F6] p-8 rounded-2xl border-l-4 border-[#2D5E4F]">
+                  <h3 className="text-2xl font-bold text-[#1C2B30] mb-4">¿Quiénes somos?</h3>
+                  <p>VERTICE es una empresa especializada en gestión, control y análisis integral de proyectos, orientada principalmente al sector construcción e infraestructura. Nuestro enfoque integra ingeniería, análisis técnico, gestión de información y herramientas tecnológicas para optimizar la ejecución, supervisión y desempeño de los proyectos.</p>
+                </div>
+
+                <div>
+                  <h3 className="text-2xl font-bold text-[#1C2B30] mb-4">Nuestros Orígenes</h3>
+                  <p>VERTICE surge a partir de la experiencia y visión de sus fundadores, quienes, tras participar en múltiples proyectos, identificaron las principales deficiencias que afectan el desarrollo eficiente de las obras, tales como desviaciones de costos, atrasos, desperdicios de materiales, falta de control técnico y limitada trazabilidad de la información.</p>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-8 pt-8">
+                  <div className="bg-white p-6 shadow-lg rounded-xl border border-gray-100">
+                    <h3 className="text-xl font-bold text-[#2D5E4F] mb-3">Misión</h3>
+                    <p className="text-sm">Ofrecer soluciones técnicas especializadas en gestión y control de proyectos, optimizando la planificación, ejecución y seguimiento mediante el uso de tecnologías avanzadas. Nos enfocamos en reducir desperdicios y sobrecostos, mejorar la eficiencia y garantizar resultados precisos.</p>
+                  </div>
+                  <div className="bg-white p-6 shadow-lg rounded-xl border border-gray-100">
+                    <h3 className="text-xl font-bold text-[#2D5E4F] mb-3">Visión</h3>
+                    <p className="text-sm">Ser una empresa referente en servicios de control y gestión técnica de proyectos, reconocida por su capacidad analítica, innovación tecnológica y aporte estratégico en la toma de decisiones dentro del sector construcción.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {currentPage === 'services' && (
+          <section className="py-20 bg-white">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="text-center max-w-3xl mx-auto mb-16">
+                <h1 className="text-4xl font-bold text-[#1C2B30] mb-6">Nuestros Servicios Integrales (360°)</h1>
+                <p className="text-xl text-gray-600">Integración de control técnico, análisis estratégico y herramientas tecnológicas orientadas a optimizar la ejecución de proyectos.</p>
+              </div>
+
+              <div className="space-y-16">
+                {SERVICES.map((srv, idx) => (
+                  <div key={idx} className={`flex flex-col ${idx % 2 !== 0 ? 'md:flex-row-reverse' : 'md:flex-row'} items-center gap-10`}>
+                    <div className="w-full md:w-1/2">
+                      <div className="aspect-video bg-[#E8F2EC] rounded-2xl flex items-center justify-center relative overflow-hidden">
+                        {/* Image Placeholder representing the service */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-[#2D5E4F] to-[#1C2B30] opacity-10 mix-blend-multiply"></div>
+                        {React.cloneElement(srv.icon, { className: "w-24 h-24 text-[#2D5E4F] opacity-20 absolute" })}
+                        <span className="text-[#4A8067] font-semibold">Visualización Técnica: {srv.title}</span>
+                      </div>
+                    </div>
+                    <div className="w-full md:w-1/2">
+                      <div className="flex items-center mb-4">
+                        <div className="p-3 bg-[#E8F2EC] rounded-lg text-[#2D5E4F] mr-4">
+                          {React.cloneElement(srv.icon, { className: "w-6 h-6" })}
+                        </div>
+                        <h2 className="text-3xl font-bold text-[#1C2B30]">{srv.title}</h2>
+                      </div>
+                      <p className="text-lg text-gray-600 mb-6">{srv.desc}</p>
+                      <ul className="space-y-3 mb-8">
+                        {['Análisis técnico profundo', 'Reportes centralizados', 'Optimización de toma de decisiones'].map((item, i) => (
+                          <li key={i} className="flex items-center text-gray-700">
+                            <CheckCircle className="w-5 h-5 text-[#7BAF9A] mr-3" />
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+                      <Button onClick={() => navigate('contact')} variant="secondary">Solicitar cotización</Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {currentPage === 'contact' && (
+          <ContactSection />
+        )}
+
+        {/* CTA FINAL GLOBAL (No se muestra en Contacto) */}
+        {currentPage !== 'contact' && (
+          <section className="bg-[#1C2B30] py-20 border-t border-gray-800">
+            <div className="max-w-4xl mx-auto px-4 text-center">
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">¿Listo para tener mayor claridad sobre el estado real de tu obra?</h2>
+              <p className="text-gray-300 text-lg mb-10">Implementa un sistema de monitoreo que evite sobrecostos y atrasos desde la primera semana.</p>
+              <Button 
+                variant="primary" 
+                className="text-lg px-8 py-4"
+                onClick={() => {
+                  trackEvent('Conversion', 'Click Bottom CTA', 'Hablemos de tu proyecto');
+                  navigate('contact');
+                }}
+              >
+                Hablemos de tu proyecto
+              </Button>
+            </div>
+          </section>
+        )}
+      </main>
+
+      {/* FOOTER */}
+      <footer className="bg-[#0F171A] text-gray-400 py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div className="md:col-span-1">
+            <div className="flex items-center mb-4 opacity-80">
+              <div className="relative w-8 h-8 mr-2">
+                <div className="absolute inset-0 bg-[#7BAF9A]" style={{ clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)' }}></div>
+              </div>
+              <span className="text-xl font-bold text-white tracking-wider">VERTICE</span>
+            </div>
+            <p className="text-sm mb-4">Soluciones adaptadas a las necesidades, alcances y condiciones particulares de cada proyecto constructivo.</p>
+          </div>
+          
+          <div>
+            <h4 className="text-white font-bold mb-4 uppercase text-sm tracking-wider">Navegación</h4>
+            <ul className="space-y-2 text-sm">
+              <li><button onClick={() => navigate('home')} className="hover:text-white transition-colors">Inicio</button></li>
+              <li><button onClick={() => navigate('about')} className="hover:text-white transition-colors">Nosotros</button></li>
+              <li><button onClick={() => navigate('services')} className="hover:text-white transition-colors">Servicios</button></li>
+              <li><button onClick={() => navigate('contact')} className="hover:text-white transition-colors">Contacto</button></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-white font-bold mb-4 uppercase text-sm tracking-wider">Contacto</h4>
+            <ul className="space-y-3 text-sm">
+              <li className="flex items-start"><MapPin className="w-4 h-4 mr-2 mt-1 text-[#7BAF9A] flex-shrink-0" /> Carretera Don Pedro, Las dianas, Santiago, RD</li>
+              <li className="flex items-center"><Phone className="w-4 h-4 mr-2 text-[#7BAF9A]" /> (809) 630-7333</li>
+              <li className="flex items-center"><Mail className="w-4 h-4 mr-2 text-[#7BAF9A]" /> info.verticegroup@gmail.com</li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-white font-bold mb-4 uppercase text-sm tracking-wider">Síguenos</h4>
+            <div className="flex space-x-4">
+              <a href="#" className="w-10 h-10 rounded-full bg-[#1C2B30] flex items-center justify-center hover:bg-[#2D5E4F] text-white transition-colors">
+                <Linkedin className="w-5 h-5" />
+              </a>
+              <a href="#" className="w-10 h-10 rounded-full bg-[#1C2B30] flex items-center justify-center hover:bg-[#2D5E4F] text-white transition-colors">
+                <Instagram className="w-5 h-5" />
+              </a>
+            </div>
+          </div>
+        </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 pt-8 border-t border-gray-800 text-sm text-center">
+          <p>&copy; {new Date().getFullYear()} VERTICE MPC GROUP. Todos los derechos reservados.</p>
+        </div>
+      </footer>
+
+      {/* WHATSAPP WIDGET FLOATING BUTTON (Conversión) */}
+      <a 
+        href="https://wa.me/18096307333?text=Hola,%20quiero%20saber%20más%20sobre%20los%20servicios%20de%20Vertice%20MPC%20Group" 
+        target="_blank" 
+        rel="noreferrer"
+        className="fixed bottom-6 right-6 w-14 h-14 bg-[#25D366] text-white rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-transform z-50 cursor-pointer"
+        onClick={() => trackEvent('Conversion', 'Click WhatsApp Float', 'Icono')}
+        aria-label="Contactar por WhatsApp"
+      >
+        <MessageCircle className="w-8 h-8" />
+      </a>
+
+    </div>
+  );
+}
