@@ -1,708 +1,775 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  Menu, X, ChevronRight, BarChart3, Camera, Globe, 
-  DollarSign, Monitor, CheckCircle, ArrowRight, MapPin, 
-  Phone, Mail, Instagram, Linkedin, Calculator, MessageCircle, AlertTriangle
-} from 'lucide-react';
-
-// --- CONFIGURACIÓN DE COLORES Y MARCA ---
-const BRAND = {
-  colors: {
-    primary: '#2D5E4F',    // Verde oscuro - autoridad
-    secondary: '#4A8067',  // Verde medio - confianza
-    tertiary: '#7BAF9A',   // Verde claro
-    dark: '#1C2B30',       // Gris oscuro - profesionalismo
-    light: '#F5F7F6',      // Blancos/Gris claro
-    accent: '#C8E6D4',     // Highlights
-  }
-};
-
-// --- SIMULADOR DE ANALÍTICA (Event Tracking) ---
-const trackEvent = (category, action, label) => {
-  console.log(`[Analytics Event] Categoria: ${category} | Accion: ${action} | Etiqueta: ${label}`);
-  // En producción, esto sería: window.gtag('event', action, { event_category: category, event_label: label });
-};
-
-// --- DATA MOCK ---
-const SERVICES = [
-  {
-    id: 'gestion',
-    icon: <BarChart3 className="w-8 h-8" />,
-    title: 'Gestión y Control de Proyectos',
-    desc: 'Seguimiento estratégico de cronogramas, avance físico y comportamiento operativo general de la obra.'
-  },
-  {
-    id: 'fotogrametria',
-    icon: <Camera className="w-8 h-8" />,
-    title: 'Fotogrametría y Levantamientos',
-    desc: 'Captura aérea para seguimiento visual, levantamientos técnicos y monitoreo de avance con drones.'
-  },
-  {
-    id: 'recorridos',
-    icon: <Globe className="w-8 h-8" />,
-    title: 'Recorridos Virtuales 360°',
-    desc: 'Visualización interactiva para documentación, seguimiento remoto y registro histórico.'
-  },
-  {
-    id: 'costos',
-    icon: <DollarSign className="w-8 h-8" />,
-    title: 'Control de Costos',
-    desc: 'Seguimiento presupuesto vs ejecución real, control de consumos, cubicaciones y análisis financiero.'
-  },
-  {
-    id: 'digital',
-    icon: <Monitor className="w-8 h-8" />,
-    title: 'Gestión Digital Centralizada',
-    desc: 'Herramientas digitales para centralización, visualización y control de información técnica.'
-  }
-];
-
-const PAIN_POINTS = [
-  { title: 'Desviaciones de costos', desc: 'Sobrecostos no detectados a tiempo que reducen la rentabilidad.' },
-  { title: 'Atrasos en cronogramas', desc: 'Falta de control visible que genera retrasos en las entregas.' },
-  { title: 'Desperdicio de recursos', desc: 'Materiales mal gestionados por falta de supervisión técnica.' },
-  { title: 'Información dispersa', desc: 'Falta de trazabilidad que dificulta la toma de decisiones.' }
-];
-
-// --- COMPONENTES UI COMPARTIDOS ---
-const Button = ({ children, variant = 'primary', onClick, className = '', fullWidth = false }) => {
-  const baseStyles = "inline-flex items-center justify-center px-6 py-3 rounded-md font-medium transition-all duration-300 ease-in-out transform hover:-translate-y-1";
-  const variants = {
-    primary: "bg-[#2D5E4F] text-white hover:bg-[#1C2B30] shadow-lg hover:shadow-xl",
-    secondary: "bg-transparent border-2 border-[#2D5E4F] text-[#2D5E4F] hover:bg-[#2D5E4F] hover:text-white",
-    white: "bg-white text-[#2D5E4F] hover:bg-gray-100 shadow-lg",
-    outlineWhite: "bg-transparent border-2 border-white text-white hover:bg-white hover:text-[#2D5E4F]"
-  };
-  
-  return (
-    <button 
-      onClick={onClick} 
-      className={`${baseStyles} ${variants[variant]} ${fullWidth ? 'w-full' : ''} ${className}`}
-    >
-      {children}
-    </button>
-  );
-};
-
-// --- SECCIONES PRINCIPALES ---
-
-const Hero = ({ navigate }) => (
-  <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-[#1C2B30]">
-    {/* Background Image/Overlay Simulation */}
-    <div className="absolute inset-0 z-0 opacity-20">
-      <div className="absolute inset-0 bg-gradient-to-r from-[#1C2B30] to-transparent z-10" />
-      <img 
-        src="https://images.unsplash.com/photo-1541881451970-13e51f5c6e83?q=80&w=2000&auto=format&fit=crop" 
-        alt="Proyecto de construcción de alta escala" 
-        className="w-full h-full object-cover"
-      />
-    </div>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VERTICE MPC Group | Control Estratégico de Proyectos</title>
+    <meta name="description" content="Expertos en gestión, control y análisis integral de proyectos en República Dominicana. Fotogrametría, costos, recorridos 360.">
     
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-      <div className="max-w-3xl">
-        <span className="inline-block py-1 px-3 rounded-full bg-[#4A8067] text-white text-sm font-semibold mb-6 tracking-wide uppercase">
-          Ingeniería • Tecnología • Control
-        </span>
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
-          Tus proyectos bajo control. <br/>
-          <span className="text-[#7BAF9A]">Desde el primer día hasta la entrega.</span>
-        </h1>
-        <p className="text-lg md:text-xl text-gray-300 mb-10 max-w-2xl leading-relaxed">
-          Control estratégico de proyectos para desarrolladores y fiduciarias. 
-          Más visibilidad, menos riesgos, mejores resultados.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-4">
-          <Button 
-            variant="primary"
-            onClick={() => {
-              trackEvent('Conversion', 'Click CTA Hero', 'Solicitar Diagnostico');
-              navigate('contact');
-            }}
-          >
-            Solicitar diagnóstico gratuito
-            <ArrowRight className="ml-2 w-5 h-5" />
-          </Button>
-          <Button 
-            variant="outlineWhite"
-            onClick={() => {
-              trackEvent('Navigation', 'Click CTA Hero Secundario', 'Ver Servicios');
-              navigate('services');
-            }}
-          >
-            Ver nuestros servicios
-          </Button>
-        </div>
-      </div>
-    </div>
-  </section>
-);
+    <!-- Fuentes de Google: Outfit para un look moderno y técnico -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-const PainPoints = () => (
-  <section className="py-20 bg-white">
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="text-center max-w-3xl mx-auto mb-16">
-        <h2 className="text-3xl md:text-4xl font-bold text-[#1C2B30] mb-4">El sector construcción es complejo. <br/>Tu gestión no debería serlo.</h2>
-        <p className="text-gray-600 text-lg">Las deficiencias en la ejecución cuestan dinero y tiempo. Identificamos y mitigamos los principales riesgos operativos.</p>
-      </div>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-        {PAIN_POINTS.map((point, idx) => (
-          <div key={idx} className="bg-[#F5F7F6] p-8 rounded-xl border border-gray-100 hover:shadow-lg transition-shadow">
-            <AlertTriangle className="w-10 h-10 text-[#4A8067] mb-4" />
-            <h3 className="text-xl font-bold text-[#1C2B30] mb-3">{point.title}</h3>
-            <p className="text-gray-600">{point.desc}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-);
-
-const ServicesOverview = ({ navigate }) => (
-  <section className="py-20 bg-[#F5F7F6]">
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="flex flex-col md:flex-row justify-between items-end mb-12">
-        <div className="max-w-2xl">
-          <span className="text-[#4A8067] font-semibold tracking-wider uppercase">Lo que hacemos</span>
-          <h2 className="text-3xl md:text-4xl font-bold text-[#1C2B30] mt-2 mb-4">Soluciones técnicas adaptadas a cada proyecto</h2>
-        </div>
-        <button 
-          onClick={() => navigate('services')}
-          className="text-[#2D5E4F] font-semibold hover:text-[#4A8067] flex items-center group hidden md:flex"
-        >
-          Ver todos los servicios
-          <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-        </button>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {SERVICES.map((srv, idx) => (
-          <div 
-            key={idx} 
-            className="bg-white p-8 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 group cursor-pointer"
-            onClick={() => {
-              trackEvent('Navigation', 'Click Card Servicio', srv.title);
-              navigate('contact'); // Ideally would go to service detail
-            }}
-          >
-            <div className="w-14 h-14 bg-[#E8F2EC] rounded-lg flex items-center justify-center text-[#2D5E4F] mb-6 group-hover:bg-[#2D5E4F] group-hover:text-white transition-colors">
-              {srv.icon}
-            </div>
-            <h3 className="text-xl font-bold text-[#1C2B30] mb-3">{srv.title}</h3>
-            <p className="text-gray-600 mb-6 line-clamp-3">{srv.desc}</p>
-            <div className="text-[#4A8067] font-medium flex items-center group-hover:text-[#2D5E4F]">
-              Saber más <ChevronRight className="w-4 h-4 ml-1" />
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-);
-
-const RiskCalculator = () => {
-  const [step, setStep] = useState(0);
-  const [loading, setLoading] = useState(false);
-  
-  const questions = [
-    { q: "¿Cuentas con un control estricto de presupuesto vs. ejecución real?", a: ["Sí, al día", "Parcialmente", "No, es un reto actual"] },
-    { q: "¿Tienes visibilidad centralizada del avance físico de la obra?", a: ["Sí, con dashboards", "Solo reportes en PDF/Excel", "No tengo visibilidad clara"] },
-    { q: "¿Utilizas herramientas como drones o recorridos 360 para supervisión remota?", a: ["Sí", "Estamos evaluándolo", "No, supervisión tradicional"] }
-  ];
-
-  const handleNext = () => {
-    trackEvent('Engagement', 'Calculator Step', `Step ${step + 1}`);
-    if (step < questions.length) {
-      setStep(step + 1);
-    }
-  };
-
-  const calculateResult = () => {
-    setLoading(true);
-    trackEvent('Conversion', 'Calculator Complete', 'Generando Resultado');
-    setTimeout(() => {
-      setLoading(false);
-      setStep(step + 1);
-    }, 1500);
-  };
-
-  return (
-    <section className="py-24 bg-[#2D5E4F] text-white relative overflow-hidden">
-      {/* Decorative bg */}
-      <div className="absolute top-0 right-0 -mt-20 -mr-20 w-96 h-96 bg-[#4A8067] rounded-full blur-3xl opacity-50"></div>
-      <div className="absolute bottom-0 left-0 -mb-20 -ml-20 w-80 h-80 bg-[#1C2B30] rounded-full blur-3xl opacity-50"></div>
-
-      <div className="max-w-4xl mx-auto px-4 relative z-10 text-center">
-        <Calculator className="w-12 h-12 text-[#7BAF9A] mx-auto mb-6" />
-        <h2 className="text-3xl md:text-4xl font-bold mb-4">¿Conoces el nivel de riesgo en tu obra actual?</h2>
-        <p className="text-[#C8E6D4] text-lg mb-10 max-w-2xl mx-auto">Responde 3 breves preguntas para identificar áreas críticas de optimización en tu proyecto constructivo.</p>
-
-        <div className="bg-white text-left rounded-2xl shadow-2xl p-8 max-w-2xl mx-auto text-[#1C2B30]">
-          {step < questions.length ? (
-            <div>
-              <span className="text-sm font-bold text-[#4A8067] uppercase tracking-wider mb-2 block">
-                Pregunta {step + 1} de {questions.length}
-              </span>
-              <h3 className="text-2xl font-bold mb-6">{questions[step].q}</h3>
-              <div className="space-y-3">
-                {questions[step].a.map((ans, idx) => (
-                  <button 
-                    key={idx}
-                    onClick={() => step === questions.length - 1 ? calculateResult() : handleNext()}
-                    className="w-full text-left px-6 py-4 rounded-lg border border-gray-200 hover:border-[#2D5E4F] hover:bg-[#F5F7F6] font-medium transition-colors"
-                  >
-                    {ans}
-                  </button>
-                ))}
-              </div>
-            </div>
-          ) : loading ? (
-             <div className="text-center py-12">
-               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#2D5E4F] mx-auto mb-4"></div>
-               <h3 className="text-xl font-bold text-[#1C2B30]">Analizando respuestas...</h3>
-             </div>
-          ) : (
-            <div className="text-center py-6">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-orange-100 text-orange-600 rounded-full mb-6">
-                <AlertTriangle className="w-8 h-8" />
-              </div>
-              <h3 className="text-2xl font-bold mb-4">Riesgo Operativo Detectado: Medio-Alto</h3>
-              <p className="text-gray-600 mb-8">
-                Las deficiencias en control de costos y trazabilidad de información pueden generar hasta un 15% de desviación presupuestal. VERTICE puede ayudarte a centralizar y controlar estos procesos.
-              </p>
-              <Button onClick={() => trackEvent('Conversion', 'Click CTA Calculator', 'Solicitar Asesoria')} fullWidth>
-                Solicitar Asesoría Personalizada
-              </Button>
-            </div>
-          )}
-        </div>
-      </div>
-    </section>
-  );
-};
-
-const ContactSection = () => {
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    trackEvent('Conversion', 'Form Submit', 'Contacto General');
-    alert("Mensaje enviado con éxito. Un especialista de VERTICE le contactará en menos de 24 horas.");
-  };
-
-  return (
-    <section className="py-20 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-          
-          {/* Info Contacto */}
-          <div>
-            <span className="text-[#4A8067] font-semibold tracking-wider uppercase mb-2 block">Hablemos de su proyecto</span>
-            <h2 className="text-3xl md:text-4xl font-bold text-[#1C2B30] mb-6">Estamos listos para optimizar su inversión.</h2>
-            <p className="text-gray-600 text-lg mb-10">
-              Contáctenos para realizar un diagnóstico inicial sin compromiso. Descubra cómo nuestra metodología de control puede reducir riesgos y aumentar la eficiencia de su obra.
-            </p>
-            
-            <div className="space-y-6">
-              <div className="flex items-start">
-                <div className="bg-[#E8F2EC] p-3 rounded-lg text-[#2D5E4F] mr-4">
-                  <MapPin className="w-6 h-6" />
-                </div>
-                <div>
-                  <h4 className="font-bold text-[#1C2B30]">Ubicación</h4>
-                  <p className="text-gray-600">Carretera Don Pedro, Las Dianas,<br/>Santiago, Rep. Dominicana</p>
-                </div>
-              </div>
-              <div className="flex items-start">
-                <div className="bg-[#E8F2EC] p-3 rounded-lg text-[#2D5E4F] mr-4">
-                  <Phone className="w-6 h-6" />
-                </div>
-                <div>
-                  <h4 className="font-bold text-[#1C2B30]">Teléfono</h4>
-                  <p className="text-gray-600">(809) 630-7333</p>
-                </div>
-              </div>
-              <div className="flex items-start">
-                <div className="bg-[#E8F2EC] p-3 rounded-lg text-[#2D5E4F] mr-4">
-                  <Mail className="w-6 h-6" />
-                </div>
-                <div>
-                  <h4 className="font-bold text-[#1C2B30]">Correo Electrónico</h4>
-                  <p className="text-gray-600">info.verticegroup@gmail.com</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Formulario (Lead Gen) */}
-          <div className="bg-[#F5F7F6] p-8 md:p-10 rounded-2xl shadow-sm border border-gray-100">
-            <h3 className="text-2xl font-bold text-[#1C2B30] mb-6">Solicitar Diagnóstico</h3>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Nombre completo *</label>
-                  <input required type="text" className="w-full px-4 py-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-[#2D5E4F] focus:border-transparent outline-none" placeholder="Ing. Juan Pérez" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Empresa / Fiduciaria *</label>
-                  <input required type="text" className="w-full px-4 py-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-[#2D5E4F] focus:border-transparent outline-none" placeholder="Constructora XYZ" />
-                </div>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Teléfono / WhatsApp *</label>
-                  <input required type="tel" className="w-full px-4 py-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-[#2D5E4F] focus:border-transparent outline-none" placeholder="(809) 000-0000" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Servicio de interés</label>
-                  <select className="w-full px-4 py-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-[#2D5E4F] focus:border-transparent outline-none bg-white">
-                    <option>Gestión y Control Integral</option>
-                    <option>Control de Costos</option>
-                    <option>Fotogrametría y Drones</option>
-                    <option>Recorridos 360°</option>
-                    <option>Aún no estoy seguro</option>
-                  </select>
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Cuéntenos brevemente sobre su proyecto</label>
-                <textarea rows="4" className="w-full px-4 py-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-[#2D5E4F] focus:border-transparent outline-none" placeholder="Tipo de obra, etapa actual, problemas principales..."></textarea>
-              </div>
-              <Button fullWidth className="mt-4">
-                Enviar Solicitud
-              </Button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-};
-
-
-// --- ESTRUCTURA PRINCIPAL (APP) ---
-
-export default function App() {
-  const [currentPage, setCurrentPage] = useState('home');
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  // SEO Simulator
-  useEffect(() => {
-    const seoMeta = {
-      home: { title: "VERTICE MPC Group | Control Estratégico de Proyectos de Construcción", desc: "Expertos en gestión, control y análisis integral de proyectos en República Dominicana. Fotogrametría, costos, recorridos 360." },
-      services: { title: "Nuestros Servicios | VERTICE MPC Group", desc: "Soluciones técnicas: Gestión de proyectos, control de costos, fotogrametría con drones y gestión digital." },
-      about: { title: "Quiénes Somos | VERTICE MPC Group", desc: "Conoce el origen, misión y valores de Vertice MPC Group. Innovación y excelencia en el sector construcción." },
-      contact: { title: "Contacto | VERTICE MPC Group", desc: "Solicita un diagnóstico gratuito para tu proyecto de construcción. Estamos en Santiago, República Dominicana." }
-    };
+    <!-- Tailwind CSS (CDN para evitar compilación) -->
+    <script src="https://cdn.tailwindcss.com"></script>
     
-    document.title = seoMeta[currentPage]?.title || seoMeta.home.title;
-    
-    // Simulating changing meta description
-    let metaDesc = document.querySelector('meta[name="description"]');
-    if(!metaDesc) {
-      metaDesc = document.createElement('meta');
-      metaDesc.name = "description";
-      document.head.appendChild(metaDesc);
-    }
-    metaDesc.content = seoMeta[currentPage]?.desc || seoMeta.home.desc;
+    <!-- Configuración de Colores Corporativos -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#2D5E4F',    // Verde oscuro - autoridad
+                        secondary: '#4A8067',  // Verde medio - confianza
+                        tertiary: '#7BAF9A',   // Verde claro
+                        dark: '#1C2B30',       // Gris oscuro - profesionalismo
+                        light: '#F5F7F6',      // Blancos/Gris claro
+                        accent: '#C8E6D4',     // Highlights
+                    }
+                }
+            }
+        }
+    </script>
 
-    // Track pageview
-    trackEvent('Sistema', 'Pageview', currentPage);
-    
-    window.scrollTo(0, 0);
-  }, [currentPage]);
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
 
-  const navigate = (page) => {
-    setCurrentPage(page);
-    setIsMenuOpen(false);
-  };
-
-  const navLinks = [
-    { id: 'home', label: 'Inicio' },
-    { id: 'about', label: 'Nosotros' },
-    { id: 'services', label: 'Servicios' },
-    { id: 'contact', label: 'Contacto' }
-  ];
-
-  return (
-    <div className="min-h-screen bg-white font-sans text-gray-800 flex flex-col">
-      
-      {/* HEADER & NAVBAR */}
-      <header className="fixed w-full z-50 bg-white/95 backdrop-blur-sm shadow-sm border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
-            {/* Logo */}
-            <div 
-              className="flex items-center cursor-pointer" 
-              onClick={() => navigate('home')}
-            >
-              {/* Logo icon simulation based on PDF (Triangle) */}
-              <div className="relative w-10 h-10 mr-3">
-                <div className="absolute inset-0 bg-gradient-to-tr from-[#2D5E4F] to-[#7BAF9A] opacity-90" style={{ clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)' }}></div>
-                <div className="absolute inset-0 bg-[#1C2B30] opacity-40" style={{ clipPath: 'polygon(50% 0%, 50% 100%, 100% 100%)' }}></div>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-2xl font-black text-[#1C2B30] tracking-wider leading-none">VERTICE</span>
-                <span className="text-[10px] text-[#4A8067] font-semibold tracking-[0.2em] leading-tight">MPC GROUP</span>
-              </div>
-            </div>
-
-            {/* Desktop Menu */}
-            <nav className="hidden md:flex items-center space-x-8">
-              {navLinks.map(link => (
-                <button
-                  key={link.id}
-                  onClick={() => navigate(link.id)}
-                  className={`text-sm font-medium transition-colors hover:text-[#2D5E4F] ${
-                    currentPage === link.id ? 'text-[#2D5E4F] border-b-2 border-[#2D5E4F]' : 'text-gray-600'
-                  }`}
-                >
-                  {link.label}
-                </button>
-              ))}
-              <Button 
-                variant="primary" 
-                onClick={() => {
-                  trackEvent('Conversion', 'Click Nav CTA', 'Diagnostico');
-                  navigate('contact');
-                }}
-                className="py-2 px-4 text-sm"
-              >
-                Diagnóstico Gratuito
-              </Button>
-            </nav>
-
-            {/* Mobile menu button */}
-            <div className="md:hidden flex items-center">
-              <button 
-                onClick={() => setIsMenuOpen(!isMenuOpen)} 
-                className="text-[#1C2B30] hover:text-[#2D5E4F]"
-                aria-label="Menu principal"
-              >
-                {isMenuOpen ? <X className="h-7 w-7" /> : <Menu className="h-7 w-7" />}
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Mobile Menu Panel */}
-        {isMenuOpen && (
-          <div className="md:hidden bg-white border-b border-gray-100 shadow-xl absolute w-full">
-            <div className="px-4 pt-2 pb-6 space-y-1">
-              {navLinks.map(link => (
-                <button
-                  key={link.id}
-                  onClick={() => navigate(link.id)}
-                  className={`block w-full text-left px-3 py-4 text-base font-medium border-b border-gray-50 ${
-                    currentPage === link.id ? 'text-[#2D5E4F] font-bold' : 'text-gray-600'
-                  }`}
-                >
-                  {link.label}
-                </button>
-              ))}
-              <div className="pt-4">
-                <Button fullWidth onClick={() => navigate('contact')}>Diagnóstico Gratuito</Button>
-              </div>
-            </div>
-          </div>
-        )}
-      </header>
-
-      {/* MAIN CONTENT AREA */}
-      <main className="flex-grow pt-20">
+    <style>
+        /* Clases de utilidad para botones compartidos */
+        .btn-base {
+            display: inline-flex; align-items: center; justify-content: center;
+            padding: 0.75rem 1.5rem; border-radius: 0.375rem; font-weight: 500;
+            transition: all 0.3s ease-in-out; cursor: pointer;
+        }
+        .btn-base:hover { transform: translateY(-0.25rem); }
         
-        {currentPage === 'home' && (
-          <>
-            <Hero navigate={navigate} />
-            <PainPoints />
-            <ServicesOverview navigate={navigate} />
-            <RiskCalculator />
-            
-            {/* Sección Rápida de Beneficios (Desde PDF Pag 8) */}
-            <section className="py-20 bg-white">
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                <h2 className="text-3xl font-bold text-[#1C2B30] mb-12">Por qué los desarrolladores confían en nosotros</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                  {[
-                    {t: 'Control del Proyecto', d: 'Seguimiento continuo de la ejecución y costos.'},
-                    {t: 'Gestión de Información', d: 'Trazabilidad y organización documental técnica.'},
-                    {t: 'Monitoreo Visual', d: 'Seguimiento visual continuo y registro histórico.'},
-                    {t: 'Fortalecimiento', d: 'Mejora en los procesos internos de supervisión.'}
-                  ].map((b, i) => (
-                    <div key={i} className="flex flex-col items-center">
-                      <div className="w-16 h-16 bg-[#F5F7F6] rounded-full flex items-center justify-center mb-4 text-[#4A8067]">
-                        <CheckCircle className="w-8 h-8" />
-                      </div>
-                      <h4 className="font-bold text-[#1C2B30] mb-2">{b.t}</h4>
-                      <p className="text-gray-600 text-sm">{b.d}</p>
+        .btn-primary { background-color: #2D5E4F; color: white; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        .btn-primary:hover { background-color: #1C2B30; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
+        
+        .btn-secondary { background-color: transparent; border: 2px solid #2D5E4F; color: #2D5E4F; }
+        .btn-secondary:hover { background-color: #2D5E4F; color: white; }
+        
+        .btn-outline-white { background-color: transparent; border: 2px solid white; color: white; }
+        .btn-outline-white:hover { background-color: white; color: #2D5E4F; }
+
+        /* Ocultar secciones dinámicamente */
+        .page-section { display: none; }
+        .page-section.active { display: block; animation: fadeIn 0.5s ease-in-out; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Prevenir scroll cuando el menú móvil está abierto */
+        body.menu-open { overflow: hidden; }
+    </style>
+</head>
+<body class="min-h-screen bg-white text-gray-800 flex flex-col antialiased">
+
+    <!-- HEADER & NAVBAR -->
+    <header class="fixed w-full z-50 bg-white/95 backdrop-blur-sm shadow-sm border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <div class="flex items-center cursor-pointer" onclick="navigate('home')">
+                    <div class="relative w-10 h-10 mr-3">
+                        <div class="absolute inset-0 bg-gradient-to-tr from-primary to-tertiary opacity-90" style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%)"></div>
+                        <div class="absolute inset-0 bg-dark opacity-40" style="clip-path: polygon(50% 0%, 50% 100%, 100% 100%)"></div>
                     </div>
-                  ))}
-                </div>
-              </div>
-            </section>
-          </>
-        )}
-
-        {currentPage === 'about' && (
-          <section className="py-20 bg-white">
-            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-              <span className="text-[#4A8067] font-semibold tracking-wider uppercase mb-2 block text-center">Perfil Empresarial</span>
-              <h1 className="text-4xl font-bold text-[#1C2B30] mb-12 text-center">Nuestra visión y origen</h1>
-              
-              <div className="prose prose-lg max-w-none text-gray-600 space-y-8">
-                <div className="bg-[#F5F7F6] p-8 rounded-2xl border-l-4 border-[#2D5E4F]">
-                  <h3 className="text-2xl font-bold text-[#1C2B30] mb-4">¿Quiénes somos?</h3>
-                  <p>VERTICE es una empresa especializada en gestión, control y análisis integral de proyectos, orientada principalmente al sector construcción e infraestructura. Nuestro enfoque integra ingeniería, análisis técnico, gestión de información y herramientas tecnológicas para optimizar la ejecución, supervisión y desempeño de los proyectos.</p>
+                    <div class="flex flex-col">
+                        <span class="text-2xl font-black text-dark tracking-wider leading-none">VERTICE</span>
+                        <span class="text-[10px] text-secondary font-semibold tracking-[0.2em] leading-tight">MPC GROUP</span>
+                    </div>
                 </div>
 
-                <div>
-                  <h3 className="text-2xl font-bold text-[#1C2B30] mb-4">Nuestros Orígenes</h3>
-                  <p>VERTICE surge a partir de la experiencia y visión de sus fundadores, quienes, tras participar en múltiples proyectos, identificaron las principales deficiencias que afectan el desarrollo eficiente de las obras, tales como desviaciones de costos, atrasos, desperdicios de materiales, falta de control técnico y limitada trazabilidad de la información.</p>
-                </div>
+                <!-- Desktop Menu -->
+                <nav class="hidden md:flex items-center space-x-8">
+                    <button onclick="navigate('home')" class="nav-link text-sm font-medium transition-colors text-primary border-b-2 border-primary" data-target="home">Inicio</button>
+                    <button onclick="navigate('about')" class="nav-link text-sm font-medium transition-colors text-gray-600 hover:text-primary" data-target="about">Nosotros</button>
+                    <button onclick="navigate('services')" class="nav-link text-sm font-medium transition-colors text-gray-600 hover:text-primary" data-target="services">Servicios</button>
+                    <button onclick="navigate('contact')" class="nav-link text-sm font-medium transition-colors text-gray-600 hover:text-primary" data-target="contact">Contacto</button>
+                    <button class="btn-base btn-primary py-2 px-4 text-sm" onclick="trackEvent('Conversion', 'Click Nav CTA', 'Diagnostico'); navigate('contact');">
+                        Diagnóstico Gratuito
+                    </button>
+                </nav>
 
-                <div className="grid md:grid-cols-2 gap-8 pt-8">
-                  <div className="bg-white p-6 shadow-lg rounded-xl border border-gray-100">
-                    <h3 className="text-xl font-bold text-[#2D5E4F] mb-3">Misión</h3>
-                    <p className="text-sm">Ofrecer soluciones técnicas especializadas en gestión y control de proyectos, optimizando la planificación, ejecución y seguimiento mediante el uso de tecnologías avanzadas. Nos enfocamos en reducir desperdicios y sobrecostos, mejorar la eficiencia y garantizar resultados precisos.</p>
-                  </div>
-                  <div className="bg-white p-6 shadow-lg rounded-xl border border-gray-100">
-                    <h3 className="text-xl font-bold text-[#2D5E4F] mb-3">Visión</h3>
-                    <p className="text-sm">Ser una empresa referente en servicios de control y gestión técnica de proyectos, reconocida por su capacidad analítica, innovación tecnológica y aporte estratégico en la toma de decisiones dentro del sector construcción.</p>
-                  </div>
+                <!-- Mobile menu button -->
+                <div class="md:hidden flex items-center">
+                    <button onclick="toggleMobileMenu()" class="text-dark hover:text-primary focus:outline-none">
+                        <i data-lucide="menu" id="menu-icon-open" class="h-7 w-7"></i>
+                        <i data-lucide="x" id="menu-icon-close" class="h-7 w-7 hidden"></i>
+                    </button>
                 </div>
-              </div>
             </div>
-          </section>
-        )}
+        </div>
 
-        {currentPage === 'services' && (
-          <section className="py-20 bg-white">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="text-center max-w-3xl mx-auto mb-16">
-                <h1 className="text-4xl font-bold text-[#1C2B30] mb-6">Nuestros Servicios Integrales (360°)</h1>
-                <p className="text-xl text-gray-600">Integración de control técnico, análisis estratégico y herramientas tecnológicas orientadas a optimizar la ejecución de proyectos.</p>
-              </div>
+        <!-- Mobile Menu Panel -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-gray-100 shadow-xl absolute w-full left-0 top-20 h-[calc(100vh-80px)] overflow-y-auto">
+            <div class="px-4 pt-2 pb-6 space-y-1">
+                <button onclick="navigate('home')" class="mobile-nav-link block w-full text-left px-3 py-4 text-base font-medium border-b border-gray-50 text-primary font-bold" data-target="home">Inicio</button>
+                <button onclick="navigate('about')" class="mobile-nav-link block w-full text-left px-3 py-4 text-base font-medium border-b border-gray-50 text-gray-600" data-target="about">Nosotros</button>
+                <button onclick="navigate('services')" class="mobile-nav-link block w-full text-left px-3 py-4 text-base font-medium border-b border-gray-50 text-gray-600" data-target="services">Servicios</button>
+                <button onclick="navigate('contact')" class="mobile-nav-link block w-full text-left px-3 py-4 text-base font-medium border-b border-gray-50 text-gray-600" data-target="contact">Contacto</button>
+                <div class="pt-6">
+                    <button class="btn-base btn-primary w-full" onclick="navigate('contact')">Diagnóstico Gratuito</button>
+                </div>
+            </div>
+        </div>
+    </header>
 
-              <div className="space-y-16">
-                {SERVICES.map((srv, idx) => (
-                  <div key={idx} className={`flex flex-col ${idx % 2 !== 0 ? 'md:flex-row-reverse' : 'md:flex-row'} items-center gap-10`}>
-                    <div className="w-full md:w-1/2">
-                      <div className="aspect-video bg-[#E8F2EC] rounded-2xl flex items-center justify-center relative overflow-hidden">
-                        {/* Image Placeholder representing the service */}
-                        <div className="absolute inset-0 bg-gradient-to-br from-[#2D5E4F] to-[#1C2B30] opacity-10 mix-blend-multiply"></div>
-                        {React.cloneElement(srv.icon, { className: "w-24 h-24 text-[#2D5E4F] opacity-20 absolute" })}
-                        <span className="text-[#4A8067] font-semibold">Visualización Técnica: {srv.title}</span>
-                      </div>
-                    </div>
-                    <div className="w-full md:w-1/2">
-                      <div className="flex items-center mb-4">
-                        <div className="p-3 bg-[#E8F2EC] rounded-lg text-[#2D5E4F] mr-4">
-                          {React.cloneElement(srv.icon, { className: "w-6 h-6" })}
+    <!-- MAIN CONTENT AREA -->
+    <main class="flex-grow pt-20">
+        
+        <!-- PÁGINA: INICIO -->
+        <div id="page-home" class="page-section active">
+            <!-- Hero -->
+            <section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-dark">
+                <div class="absolute inset-0 z-0 opacity-20">
+                    <div class="absolute inset-0 bg-gradient-to-r from-dark to-transparent z-10"></div>
+                    <img src="https://images.unsplash.com/photo-1541881451970-13e51f5c6e83?q=80&w=2000&auto=format&fit=crop" alt="Proyecto de construcción" class="w-full h-full object-cover"/>
+                </div>
+                
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                    <div class="max-w-3xl">
+                        <span class="inline-block py-1 px-3 rounded-full bg-secondary text-white text-sm font-semibold mb-6 tracking-wide uppercase">
+                            Ingeniería • Tecnología • Control
+                        </span>
+                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
+                            Tus proyectos bajo control. <br/>
+                            <span class="text-tertiary">Desde el primer día hasta la entrega.</span>
+                        </h1>
+                        <p class="text-lg md:text-xl text-gray-300 mb-10 max-w-2xl leading-relaxed">
+                            Control estratégico de proyectos para desarrolladores y fiduciarias. 
+                            Más visibilidad, menos riesgos, mejores resultados.
+                        </p>
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <button class="btn-base btn-primary" onclick="trackEvent('Conversion', 'Click CTA Hero', 'Solicitar Diagnostico'); navigate('contact');">
+                                Solicitar diagnóstico gratuito <i data-lucide="arrow-right" class="ml-2 w-5 h-5"></i>
+                            </button>
+                            <button class="btn-base btn-outline-white" onclick="trackEvent('Navigation', 'Click CTA Hero Secundario', 'Ver Servicios'); navigate('services');">
+                                Ver nuestros servicios
+                            </button>
                         </div>
-                        <h2 className="text-3xl font-bold text-[#1C2B30]">{srv.title}</h2>
-                      </div>
-                      <p className="text-lg text-gray-600 mb-6">{srv.desc}</p>
-                      <ul className="space-y-3 mb-8">
-                        {['Análisis técnico profundo', 'Reportes centralizados', 'Optimización de toma de decisiones'].map((item, i) => (
-                          <li key={i} className="flex items-center text-gray-700">
-                            <CheckCircle className="w-5 h-5 text-[#7BAF9A] mr-3" />
-                            {item}
-                          </li>
-                        ))}
-                      </ul>
-                      <Button onClick={() => navigate('contact')} variant="secondary">Solicitar cotización</Button>
                     </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
+                </div>
+            </section>
 
-        {currentPage === 'contact' && (
-          <ContactSection />
-        )}
+            <!-- Pain Points -->
+            <section class="py-20 bg-white">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center max-w-3xl mx-auto mb-16">
+                        <h2 class="text-3xl md:text-4xl font-bold text-dark mb-4">El sector construcción es complejo. <br/>Tu gestión no debería serlo.</h2>
+                        <p class="text-gray-600 text-lg">Las deficiencias en la ejecución cuestan dinero y tiempo. Identificamos y mitigamos los principales riesgos operativos.</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                        <!-- Box 1 -->
+                        <div class="bg-light p-8 rounded-xl border border-gray-100 hover:shadow-lg transition-shadow">
+                            <i data-lucide="alert-triangle" class="w-10 h-10 text-secondary mb-4"></i>
+                            <h3 class="text-xl font-bold text-dark mb-3">Desviaciones de costos</h3>
+                            <p class="text-gray-600">Sobrecostos no detectados a tiempo que reducen la rentabilidad.</p>
+                        </div>
+                        <!-- Box 2 -->
+                        <div class="bg-light p-8 rounded-xl border border-gray-100 hover:shadow-lg transition-shadow">
+                            <i data-lucide="alert-triangle" class="w-10 h-10 text-secondary mb-4"></i>
+                            <h3 class="text-xl font-bold text-dark mb-3">Atrasos en cronogramas</h3>
+                            <p class="text-gray-600">Falta de control visible que genera retrasos en las entregas.</p>
+                        </div>
+                        <!-- Box 3 -->
+                        <div class="bg-light p-8 rounded-xl border border-gray-100 hover:shadow-lg transition-shadow">
+                            <i data-lucide="alert-triangle" class="w-10 h-10 text-secondary mb-4"></i>
+                            <h3 class="text-xl font-bold text-dark mb-3">Desperdicio de recursos</h3>
+                            <p class="text-gray-600">Materiales mal gestionados por falta de supervisión técnica.</p>
+                        </div>
+                        <!-- Box 4 -->
+                        <div class="bg-light p-8 rounded-xl border border-gray-100 hover:shadow-lg transition-shadow">
+                            <i data-lucide="alert-triangle" class="w-10 h-10 text-secondary mb-4"></i>
+                            <h3 class="text-xl font-bold text-dark mb-3">Información dispersa</h3>
+                            <p class="text-gray-600">Falta de trazabilidad que dificulta la toma de decisiones.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-        {/* CTA FINAL GLOBAL (No se muestra en Contacto) */}
-        {currentPage !== 'contact' && (
-          <section className="bg-[#1C2B30] py-20 border-t border-gray-800">
-            <div className="max-w-4xl mx-auto px-4 text-center">
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">¿Listo para tener mayor claridad sobre el estado real de tu obra?</h2>
-              <p className="text-gray-300 text-lg mb-10">Implementa un sistema de monitoreo que evite sobrecostos y atrasos desde la primera semana.</p>
-              <Button 
-                variant="primary" 
-                className="text-lg px-8 py-4"
-                onClick={() => {
-                  trackEvent('Conversion', 'Click Bottom CTA', 'Hablemos de tu proyecto');
-                  navigate('contact');
-                }}
-              >
-                Hablemos de tu proyecto
-              </Button>
-            </div>
-          </section>
-        )}
-      </main>
+            <!-- Services Overview -->
+            <section class="py-20 bg-light">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="flex flex-col md:flex-row justify-between items-end mb-12">
+                        <div class="max-w-2xl">
+                            <span class="text-secondary font-semibold tracking-wider uppercase">Lo que hacemos</span>
+                            <h2 class="text-3xl md:text-4xl font-bold text-dark mt-2 mb-4">Soluciones técnicas adaptadas a cada proyecto</h2>
+                        </div>
+                        <button onclick="navigate('services')" class="text-primary font-semibold hover:text-secondary flex items-center group hidden md:flex">
+                            Ver todos los servicios <i data-lucide="arrow-right" class="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
+                        </button>
+                    </div>
 
-      {/* FOOTER */}
-      <footer className="bg-[#0F171A] text-gray-400 py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className="md:col-span-1">
-            <div className="flex items-center mb-4 opacity-80">
-              <div className="relative w-8 h-8 mr-2">
-                <div className="absolute inset-0 bg-[#7BAF9A]" style={{ clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)' }}></div>
-              </div>
-              <span className="text-xl font-bold text-white tracking-wider">VERTICE</span>
-            </div>
-            <p className="text-sm mb-4">Soluciones adaptadas a las necesidades, alcances y condiciones particulares de cada proyecto constructivo.</p>
-          </div>
-          
-          <div>
-            <h4 className="text-white font-bold mb-4 uppercase text-sm tracking-wider">Navegación</h4>
-            <ul className="space-y-2 text-sm">
-              <li><button onClick={() => navigate('home')} className="hover:text-white transition-colors">Inicio</button></li>
-              <li><button onClick={() => navigate('about')} className="hover:text-white transition-colors">Nosotros</button></li>
-              <li><button onClick={() => navigate('services')} className="hover:text-white transition-colors">Servicios</button></li>
-              <li><button onClick={() => navigate('contact')} className="hover:text-white transition-colors">Contacto</button></li>
-            </ul>
-          </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <!-- Service 1 -->
+                        <div class="bg-white p-8 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 group cursor-pointer" onclick="navigate('contact')">
+                            <div class="w-14 h-14 bg-[#E8F2EC] rounded-lg flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-colors">
+                                <i data-lucide="bar-chart-3" class="w-8 h-8"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-dark mb-3">Gestión y Control de Proyectos</h3>
+                            <p class="text-gray-600 mb-6">Seguimiento estratégico de cronogramas, avance físico y comportamiento operativo general de la obra.</p>
+                            <div class="text-secondary font-medium flex items-center group-hover:text-primary">
+                                Saber más <i data-lucide="chevron-right" class="w-4 h-4 ml-1"></i>
+                            </div>
+                        </div>
+                        <!-- Service 2 -->
+                        <div class="bg-white p-8 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 group cursor-pointer" onclick="navigate('contact')">
+                            <div class="w-14 h-14 bg-[#E8F2EC] rounded-lg flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-colors">
+                                <i data-lucide="camera" class="w-8 h-8"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-dark mb-3">Fotogrametría y Levantamientos</h3>
+                            <p class="text-gray-600 mb-6">Captura aérea para seguimiento visual, levantamientos técnicos y monitoreo de avance con drones.</p>
+                            <div class="text-secondary font-medium flex items-center group-hover:text-primary">
+                                Saber más <i data-lucide="chevron-right" class="w-4 h-4 ml-1"></i>
+                            </div>
+                        </div>
+                        <!-- Service 3 -->
+                        <div class="bg-white p-8 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 group cursor-pointer" onclick="navigate('contact')">
+                            <div class="w-14 h-14 bg-[#E8F2EC] rounded-lg flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-colors">
+                                <i data-lucide="globe" class="w-8 h-8"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-dark mb-3">Recorridos Virtuales 360°</h3>
+                            <p class="text-gray-600 mb-6">Visualización interactiva para documentación, seguimiento remoto y registro histórico.</p>
+                            <div class="text-secondary font-medium flex items-center group-hover:text-primary">
+                                Saber más <i data-lucide="chevron-right" class="w-4 h-4 ml-1"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-          <div>
-            <h4 className="text-white font-bold mb-4 uppercase text-sm tracking-wider">Contacto</h4>
-            <ul className="space-y-3 text-sm">
-              <li className="flex items-start"><MapPin className="w-4 h-4 mr-2 mt-1 text-[#7BAF9A] flex-shrink-0" /> Carretera Don Pedro, Las dianas, Santiago, RD</li>
-              <li className="flex items-center"><Phone className="w-4 h-4 mr-2 text-[#7BAF9A]" /> (809) 630-7333</li>
-              <li className="flex items-center"><Mail className="w-4 h-4 mr-2 text-[#7BAF9A]" /> info.verticegroup@gmail.com</li>
-            </ul>
-          </div>
+            <!-- Risk Calculator Interactive -->
+            <section class="py-24 bg-primary text-white relative overflow-hidden">
+                <div class="absolute top-0 right-0 -mt-20 -mr-20 w-96 h-96 bg-secondary rounded-full blur-3xl opacity-50"></div>
+                <div class="absolute bottom-0 left-0 -mb-20 -ml-20 w-80 h-80 bg-dark rounded-full blur-3xl opacity-50"></div>
 
-          <div>
-            <h4 className="text-white font-bold mb-4 uppercase text-sm tracking-wider">Síguenos</h4>
-            <div className="flex space-x-4">
-              <a href="#" className="w-10 h-10 rounded-full bg-[#1C2B30] flex items-center justify-center hover:bg-[#2D5E4F] text-white transition-colors">
-                <Linkedin className="w-5 h-5" />
-              </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-[#1C2B30] flex items-center justify-center hover:bg-[#2D5E4F] text-white transition-colors">
-                <Instagram className="w-5 h-5" />
-              </a>
-            </div>
-          </div>
+                <div class="max-w-4xl mx-auto px-4 relative z-10 text-center">
+                    <i data-lucide="calculator" class="w-12 h-12 text-tertiary mx-auto mb-6"></i>
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4">¿Conoces el nivel de riesgo en tu obra actual?</h2>
+                    <p class="text-accent text-lg mb-10 max-w-2xl mx-auto">Responde breves preguntas para identificar áreas críticas de optimización en tu proyecto constructivo.</p>
+
+                    <div class="bg-white text-left rounded-2xl shadow-2xl p-8 max-w-2xl mx-auto text-dark min-h-[300px] flex flex-col justify-center">
+                        
+                        <!-- Contenedor Preguntas -->
+                        <div id="calc-questions-container">
+                            <span id="calc-progress" class="text-sm font-bold text-secondary uppercase tracking-wider mb-2 block">
+                                Pregunta 1 de 3
+                            </span>
+                            <h3 id="calc-question" class="text-2xl font-bold mb-6">¿Cuentas con un control estricto de presupuesto vs. ejecución real?</h3>
+                            <div id="calc-answers" class="space-y-3">
+                                <!-- Botones de respuesta inyectados por JS -->
+                            </div>
+                        </div>
+
+                        <!-- Contenedor Cargando -->
+                        <div id="calc-loading-container" class="hidden text-center py-12">
+                            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+                            <h3 class="text-xl font-bold text-dark">Analizando respuestas...</h3>
+                        </div>
+
+                        <!-- Contenedor Resultado -->
+                        <div id="calc-result-container" class="hidden text-center py-6">
+                            <div class="inline-flex items-center justify-center w-16 h-16 bg-orange-100 text-orange-600 rounded-full mb-6">
+                                <i data-lucide="alert-triangle" class="w-8 h-8"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold mb-4">Riesgo Operativo Detectado: Medio-Alto</h3>
+                            <p class="text-gray-600 mb-8">
+                                Las deficiencias en control de costos y trazabilidad de información pueden generar hasta un 15% de desviación presupuestal. VERTICE puede ayudarte a centralizar y controlar estos procesos.
+                            </p>
+                            <button class="btn-base btn-primary w-full" onclick="trackEvent('Conversion', 'Click CTA Calculator', 'Solicitar Asesoria'); navigate('contact');">
+                                Solicitar Asesoría Personalizada
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sección de Beneficios -->
+            <section class="py-20 bg-white">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                    <h2 class="text-3xl font-bold text-dark mb-12">Por qué los desarrolladores confían en nosotros</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                        <div class="flex flex-col items-center">
+                            <div class="w-16 h-16 bg-light rounded-full flex items-center justify-center mb-4 text-secondary">
+                                <i data-lucide="check-circle" class="w-8 h-8"></i>
+                            </div>
+                            <h4 class="font-bold text-dark mb-2">Control del Proyecto</h4>
+                            <p class="text-gray-600 text-sm">Seguimiento continuo de la ejecución y costos.</p>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <div class="w-16 h-16 bg-light rounded-full flex items-center justify-center mb-4 text-secondary">
+                                <i data-lucide="check-circle" class="w-8 h-8"></i>
+                            </div>
+                            <h4 class="font-bold text-dark mb-2">Gestión de Información</h4>
+                            <p class="text-gray-600 text-sm">Trazabilidad y organización documental técnica.</p>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <div class="w-16 h-16 bg-light rounded-full flex items-center justify-center mb-4 text-secondary">
+                                <i data-lucide="check-circle" class="w-8 h-8"></i>
+                            </div>
+                            <h4 class="font-bold text-dark mb-2">Monitoreo Visual</h4>
+                            <p class="text-gray-600 text-sm">Seguimiento visual continuo y registro histórico.</p>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <div class="w-16 h-16 bg-light rounded-full flex items-center justify-center mb-4 text-secondary">
+                                <i data-lucide="check-circle" class="w-8 h-8"></i>
+                            </div>
+                            <h4 class="font-bold text-dark mb-2">Fortalecimiento</h4>
+                            <p class="text-gray-600 text-sm">Mejora en los procesos internos de supervisión.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 pt-8 border-t border-gray-800 text-sm text-center">
-          <p>&copy; {new Date().getFullYear()} VERTICE MPC GROUP. Todos los derechos reservados.</p>
+
+        <!-- PÁGINA: NOSOTROS -->
+        <div id="page-about" class="page-section">
+            <section class="py-20 bg-white">
+                <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <span class="text-secondary font-semibold tracking-wider uppercase mb-2 block text-center">Perfil Empresarial</span>
+                    <h1 class="text-4xl font-bold text-dark mb-12 text-center">Nuestra visión y origen</h1>
+                    
+                    <div class="text-lg text-gray-600 space-y-8">
+                        <div class="bg-light p-8 rounded-2xl border-l-4 border-primary">
+                            <h3 class="text-2xl font-bold text-dark mb-4">¿Quiénes somos?</h3>
+                            <p>VERTICE es una empresa especializada en gestión, control y análisis integral de proyectos, orientada principalmente al sector construcción e infraestructura. Nuestro enfoque integra ingeniería, análisis técnico, gestión de información y herramientas tecnológicas para optimizar la ejecución, supervisión y desempeño de los proyectos.</p>
+                        </div>
+
+                        <div>
+                            <h3 class="text-2xl font-bold text-dark mb-4">Nuestros Orígenes</h3>
+                            <p>VERTICE surge a partir de la experiencia y visión de sus fundadores, quienes, tras participar en múltiples proyectos, identificaron las principales deficiencias que afectan el desarrollo eficiente de las obras, tales como desviaciones de costos, atrasos, desperdicios de materiales, falta de control técnico y limitada trazabilidad de la información.</p>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-8 pt-8">
+                            <div class="bg-white p-6 shadow-lg rounded-xl border border-gray-100">
+                                <h3 class="text-xl font-bold text-primary mb-3">Misión</h3>
+                                <p class="text-sm">Ofrecer soluciones técnicas especializadas en gestión y control de proyectos, optimizando la planificación, ejecución y seguimiento mediante el uso de tecnologías avanzadas. Nos enfocamos en reducir desperdicios y sobrecostos, mejorar la eficiencia y garantizar resultados precisos.</p>
+                            </div>
+                            <div class="bg-white p-6 shadow-lg rounded-xl border border-gray-100">
+                                <h3 class="text-xl font-bold text-primary mb-3">Visión</h3>
+                                <p class="text-sm">Ser una empresa referente en servicios de control y gestión técnica de proyectos, reconocida por su capacidad analítica, innovación tecnológica y aporte estratégico en la toma de decisiones dentro del sector construcción.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </div>
-      </footer>
 
-      {/* WHATSAPP WIDGET FLOATING BUTTON (Conversión) */}
-      <a 
-        href="https://wa.me/18096307333?text=Hola,%20quiero%20saber%20más%20sobre%20los%20servicios%20de%20Vertice%20MPC%20Group" 
-        target="_blank" 
-        rel="noreferrer"
-        className="fixed bottom-6 right-6 w-14 h-14 bg-[#25D366] text-white rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-transform z-50 cursor-pointer"
-        onClick={() => trackEvent('Conversion', 'Click WhatsApp Float', 'Icono')}
-        aria-label="Contactar por WhatsApp"
-      >
-        <MessageCircle className="w-8 h-8" />
-      </a>
+        <!-- PÁGINA: SERVICIOS -->
+        <div id="page-services" class="page-section">
+            <section class="py-20 bg-white">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center max-w-3xl mx-auto mb-16">
+                        <h1 class="text-4xl font-bold text-dark mb-6">Nuestros Servicios Integrales (360°)</h1>
+                        <p class="text-xl text-gray-600">Integración de control técnico, análisis estratégico y herramientas tecnológicas orientadas a optimizar la ejecución de proyectos.</p>
+                    </div>
 
-    </div>
-  );
-}
+                    <div class="space-y-16">
+                        <!-- S1 -->
+                        <div class="flex flex-col md:flex-row items-center gap-10">
+                            <div class="w-full md:w-1/2">
+                                <div class="aspect-video bg-[#E8F2EC] rounded-2xl flex items-center justify-center relative overflow-hidden">
+                                    <div class="absolute inset-0 bg-gradient-to-br from-primary to-dark opacity-10 mix-blend-multiply"></div>
+                                    <i data-lucide="bar-chart-3" class="w-24 h-24 text-primary opacity-20 absolute"></i>
+                                    <span class="text-secondary font-semibold relative z-10">Visualización Técnica: Gestión Integral</span>
+                                </div>
+                            </div>
+                            <div class="w-full md:w-1/2">
+                                <div class="flex items-center mb-4">
+                                    <div class="p-3 bg-[#E8F2EC] rounded-lg text-primary mr-4">
+                                        <i data-lucide="bar-chart-3" class="w-6 h-6"></i>
+                                    </div>
+                                    <h2 class="text-3xl font-bold text-dark">Gestión y Control de Proyectos</h2>
+                                </div>
+                                <p class="text-lg text-gray-600 mb-6">Seguimiento estratégico de cronogramas, avance físico y comportamiento operativo general de la obra.</p>
+                                <ul class="space-y-3 mb-8">
+                                    <li class="flex items-center text-gray-700"><i data-lucide="check-circle" class="w-5 h-5 text-tertiary mr-3"></i> Análisis técnico profundo</li>
+                                    <li class="flex items-center text-gray-700"><i data-lucide="check-circle" class="w-5 h-5 text-tertiary mr-3"></i> Reportes centralizados</li>
+                                    <li class="flex items-center text-gray-700"><i data-lucide="check-circle" class="w-5 h-5 text-tertiary mr-3"></i> Optimización de toma de decisiones</li>
+                                </ul>
+                                <button class="btn-base btn-secondary" onclick="navigate('contact')">Solicitar cotización</button>
+                            </div>
+                        </div>
+
+                        <!-- S2 -->
+                        <div class="flex flex-col md:flex-row-reverse items-center gap-10">
+                            <div class="w-full md:w-1/2">
+                                <div class="aspect-video bg-[#E8F2EC] rounded-2xl flex items-center justify-center relative overflow-hidden">
+                                    <div class="absolute inset-0 bg-gradient-to-br from-primary to-dark opacity-10 mix-blend-multiply"></div>
+                                    <i data-lucide="camera" class="w-24 h-24 text-primary opacity-20 absolute"></i>
+                                    <span class="text-secondary font-semibold relative z-10">Visualización Técnica: Fotogrametría</span>
+                                </div>
+                            </div>
+                            <div class="w-full md:w-1/2">
+                                <div class="flex items-center mb-4">
+                                    <div class="p-3 bg-[#E8F2EC] rounded-lg text-primary mr-4">
+                                        <i data-lucide="camera" class="w-6 h-6"></i>
+                                    </div>
+                                    <h2 class="text-3xl font-bold text-dark">Fotogrametría y Levantamientos</h2>
+                                </div>
+                                <p class="text-lg text-gray-600 mb-6">Captura aérea para seguimiento visual, levantamientos técnicos y monitoreo de avance con drones.</p>
+                                <ul class="space-y-3 mb-8">
+                                    <li class="flex items-center text-gray-700"><i data-lucide="check-circle" class="w-5 h-5 text-tertiary mr-3"></i> Topografía de precisión</li>
+                                    <li class="flex items-center text-gray-700"><i data-lucide="check-circle" class="w-5 h-5 text-tertiary mr-3"></i> Evidencia visual del avance</li>
+                                    <li class="flex items-center text-gray-700"><i data-lucide="check-circle" class="w-5 h-5 text-tertiary mr-3"></i> Modelos 3D del terreno</li>
+                                </ul>
+                                <button class="btn-base btn-secondary" onclick="navigate('contact')">Solicitar cotización</button>
+                            </div>
+                        </div>
+                        
+                        <!-- S3 -->
+                        <div class="flex flex-col md:flex-row items-center gap-10">
+                            <div class="w-full md:w-1/2">
+                                <div class="aspect-video bg-[#E8F2EC] rounded-2xl flex items-center justify-center relative overflow-hidden">
+                                    <div class="absolute inset-0 bg-gradient-to-br from-primary to-dark opacity-10 mix-blend-multiply"></div>
+                                    <i data-lucide="globe" class="w-24 h-24 text-primary opacity-20 absolute"></i>
+                                    <span class="text-secondary font-semibold relative z-10">Visualización Técnica: 360°</span>
+                                </div>
+                            </div>
+                            <div class="w-full md:w-1/2">
+                                <div class="flex items-center mb-4">
+                                    <div class="p-3 bg-[#E8F2EC] rounded-lg text-primary mr-4">
+                                        <i data-lucide="globe" class="w-6 h-6"></i>
+                                    </div>
+                                    <h2 class="text-3xl font-bold text-dark">Recorridos Virtuales 360°</h2>
+                                </div>
+                                <p class="text-lg text-gray-600 mb-6">Visualización interactiva para documentación, seguimiento remoto y registro histórico.</p>
+                                <ul class="space-y-3 mb-8">
+                                    <li class="flex items-center text-gray-700"><i data-lucide="check-circle" class="w-5 h-5 text-tertiary mr-3"></i> Inspección remota de la obra</li>
+                                    <li class="flex items-center text-gray-700"><i data-lucide="check-circle" class="w-5 h-5 text-tertiary mr-3"></i> Historial documentado</li>
+                                    <li class="flex items-center text-gray-700"><i data-lucide="check-circle" class="w-5 h-5 text-tertiary mr-3"></i> Apoyo visual para inversionistas</li>
+                                </ul>
+                                <button class="btn-base btn-secondary" onclick="navigate('contact')">Solicitar cotización</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- PÁGINA: CONTACTO -->
+        <div id="page-contact" class="page-section">
+            <section class="py-20 bg-white">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+                        
+                        <!-- Info Contacto -->
+                        <div>
+                            <span class="text-secondary font-semibold tracking-wider uppercase mb-2 block">Hablemos de su proyecto</span>
+                            <h2 class="text-3xl md:text-4xl font-bold text-dark mb-6">Estamos listos para optimizar su inversión.</h2>
+                            <p class="text-gray-600 text-lg mb-10">
+                                Contáctenos para realizar un diagnóstico inicial sin compromiso. Descubra cómo nuestra metodología de control puede reducir riesgos y aumentar la eficiencia de su obra.
+                            </p>
+                            
+                            <div class="space-y-6">
+                                <div class="flex items-start">
+                                    <div class="bg-[#E8F2EC] p-3 rounded-lg text-primary mr-4">
+                                        <i data-lucide="map-pin" class="w-6 h-6"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-dark">Ubicación</h4>
+                                        <p class="text-gray-600">Carretera Don Pedro, Las Dianas,<br/>Santiago, Rep. Dominicana</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <div class="bg-[#E8F2EC] p-3 rounded-lg text-primary mr-4">
+                                        <i data-lucide="phone" class="w-6 h-6"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-dark">Teléfono</h4>
+                                        <p class="text-gray-600">(809) 630-7333</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <div class="bg-[#E8F2EC] p-3 rounded-lg text-primary mr-4">
+                                        <i data-lucide="mail" class="w-6 h-6"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-dark">Correo Electrónico</h4>
+                                        <p class="text-gray-600">info.verticegroup@gmail.com</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Formulario (Lead Gen) -->
+                        <div class="bg-light p-8 md:p-10 rounded-2xl shadow-sm border border-gray-100">
+                            <h3 class="text-2xl font-bold text-dark mb-6">Solicitar Diagnóstico</h3>
+                            <form id="contactForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Nombre completo *</label>
+                                        <input required type="text" class="w-full px-4 py-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent outline-none" placeholder="Ing. Juan Pérez" />
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Empresa / Fiduciaria *</label>
+                                        <input required type="text" class="w-full px-4 py-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent outline-none" placeholder="Constructora XYZ" />
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Teléfono / WhatsApp *</label>
+                                        <input required type="tel" class="w-full px-4 py-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent outline-none" placeholder="(809) 000-0000" />
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Servicio de interés</label>
+                                        <select class="w-full px-4 py-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent outline-none bg-white">
+                                            <option>Gestión y Control Integral</option>
+                                            <option>Control de Costos</option>
+                                            <option>Fotogrametría y Drones</option>
+                                            <option>Recorridos 360°</option>
+                                            <option>Aún no estoy seguro</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Cuéntenos brevemente sobre su proyecto</label>
+                                    <textarea rows="4" class="w-full px-4 py-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent outline-none" placeholder="Tipo de obra, etapa actual, problemas principales..."></textarea>
+                                </div>
+                                <button type="submit" class="btn-base btn-primary w-full mt-4">
+                                    Enviar Solicitud
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- CTA FINAL GLOBAL (Se oculta en página de contacto vía JS) -->
+        <section id="global-cta" class="bg-dark py-20 border-t border-gray-800">
+            <div class="max-w-4xl mx-auto px-4 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">¿Listo para tener mayor claridad sobre el estado real de tu obra?</h2>
+                <p class="text-gray-300 text-lg mb-10">Implementa un sistema de monitoreo que evite sobrecostos y atrasos desde la primera semana.</p>
+                <button class="btn-base btn-primary text-lg px-8 py-4" onclick="trackEvent('Conversion', 'Click Bottom CTA', 'Hablemos de tu proyecto'); navigate('contact');">
+                    Hablemos de tu proyecto
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-[#0F171A] text-gray-400 py-12 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div class="md:col-span-1">
+                <div class="flex items-center mb-4 opacity-80">
+                    <div class="relative w-8 h-8 mr-2">
+                        <div class="absolute inset-0 bg-tertiary" style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%)"></div>
+                    </div>
+                    <span class="text-xl font-bold text-white tracking-wider">VERTICE</span>
+                </div>
+                <p class="text-sm mb-4">Soluciones adaptadas a las necesidades, alcances y condiciones particulares de cada proyecto constructivo.</p>
+            </div>
+            
+            <div>
+                <h4 class="text-white font-bold mb-4 uppercase text-sm tracking-wider">Navegación</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><button onclick="navigate('home')" class="hover:text-white transition-colors">Inicio</button></li>
+                    <li><button onclick="navigate('about')" class="hover:text-white transition-colors">Nosotros</button></li>
+                    <li><button onclick="navigate('services')" class="hover:text-white transition-colors">Servicios</button></li>
+                    <li><button onclick="navigate('contact')" class="hover:text-white transition-colors">Contacto</button></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="text-white font-bold mb-4 uppercase text-sm tracking-wider">Contacto</h4>
+                <ul class="space-y-3 text-sm">
+                    <li class="flex items-start"><i data-lucide="map-pin" class="w-4 h-4 mr-2 mt-1 text-tertiary flex-shrink-0"></i> Carretera Don Pedro, Las dianas, Santiago, RD</li>
+                    <li class="flex items-center"><i data-lucide="phone" class="w-4 h-4 mr-2 text-tertiary"></i> (809) 630-7333</li>
+                    <li class="flex items-center"><i data-lucide="mail" class="w-4 h-4 mr-2 text-tertiary"></i> info.verticegroup@gmail.com</li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="text-white font-bold mb-4 uppercase text-sm tracking-wider">Síguenos</h4>
+                <div class="flex space-x-4">
+                    <a href="#" class="w-10 h-10 rounded-full bg-dark flex items-center justify-center hover:bg-primary text-white transition-colors">
+                        <i data-lucide="linkedin" class="w-5 h-5"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-dark flex items-center justify-center hover:bg-primary text-white transition-colors">
+                        <i data-lucide="instagram" class="w-5 h-5"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 pt-8 border-t border-gray-800 text-sm text-center">
+            <p>&copy; <span id="current-year"></span> VERTICE MPC GROUP. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- WHATSAPP WIDGET FLOATING BUTTON -->
+    <a href="https://wa.me/18096307333?text=Hola,%20quiero%20saber%20más%20sobre%20los%20servicios%20de%20Vertice%20MPC%20Group" 
+       target="_blank" rel="noreferrer"
+       class="fixed bottom-6 right-6 w-14 h-14 bg-[#25D366] text-white rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-transform z-50 cursor-pointer"
+       onclick="trackEvent('Conversion', 'Click WhatsApp Float', 'Icono')"
+       aria-label="Contactar por WhatsApp">
+        <i data-lucide="message-circle" class="w-8 h-8"></i>
+    </a>
+
+
+    <!-- ========================================== -->
+    <!-- LOGICA JAVASCRIPT (SPA, Calculadora, UI)   -->
+    <!-- ========================================== -->
+    <script>
+        // 1. INICIALIZAR ICONOS LUCIDE
+        lucide.createIcons();
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        // 2. SIMULADOR DE ANALÍTICA
+        function trackEvent(category, action, label) {
+            console.log(`[Analytics Event] Categoria: ${category} | Accion: ${action} | Etiqueta: ${label}`);
+        }
+
+        // 3. NAVEGACIÓN SPA (Single Page Application simulada)
+        const seoMeta = {
+            home: { title: "VERTICE MPC Group | Control Estratégico de Proyectos de Construcción", desc: "Expertos en gestión, control y análisis integral de proyectos en República Dominicana." },
+            services: { title: "Nuestros Servicios | VERTICE MPC Group", desc: "Soluciones técnicas: Gestión de proyectos, control de costos, fotogrametría con drones y gestión digital." },
+            about: { title: "Quiénes Somos | VERTICE MPC Group", desc: "Conoce el origen, misión y valores de Vertice MPC Group. Innovación y excelencia." },
+            contact: { title: "Contacto | VERTICE MPC Group", desc: "Solicita un diagnóstico gratuito para tu proyecto de construcción en Santiago, RD." }
+        };
+
+        function navigate(pageId) {
+            // Ocultar todas las páginas
+            document.querySelectorAll('.page-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Mostrar la página destino
+            document.getElementById(`page-${pageId}`).classList.add('active');
+
+            // Actualizar menú activo (Desktop)
+            document.querySelectorAll('.nav-link').forEach(link => {
+                if(link.dataset.target === pageId) {
+                    link.className = "nav-link text-sm font-medium transition-colors text-primary border-b-2 border-primary";
+                } else {
+                    link.className = "nav-link text-sm font-medium transition-colors text-gray-600 hover:text-primary";
+                }
+            });
+
+            // Actualizar menú activo (Mobile)
+            document.querySelectorAll('.mobile-nav-link').forEach(link => {
+                if(link.dataset.target === pageId) {
+                    link.className = "mobile-nav-link block w-full text-left px-3 py-4 text-base font-medium border-b border-gray-50 text-primary font-bold";
+                } else {
+                    link.className = "mobile-nav-link block w-full text-left px-3 py-4 text-base font-medium border-b border-gray-50 text-gray-600";
+                }
+            });
+
+            // Ocultar CTA Global si estamos en la página de contacto
+            const globalCta = document.getElementById('global-cta');
+            if(pageId === 'contact') {
+                globalCta.style.display = 'none';
+            } else {
+                globalCta.style.display = 'block';
+            }
+
+            // SEO Updates
+            document.title = seoMeta[pageId]?.title || seoMeta.home.title;
+            let metaDesc = document.querySelector('meta[name="description"]');
+            if(metaDesc) {
+                metaDesc.content = seoMeta[pageId]?.desc || seoMeta.home.desc;
+            }
+
+            // Track y scroll top
+            trackEvent('Sistema', 'Pageview', pageId);
+            window.scrollTo(0, 0);
+            
+            // Cerrar menú móvil si está abierto
+            if(document.body.classList.contains('menu-open')) {
+                toggleMobileMenu();
+            }
+        }
+
+        // 4. MENU MOVIL
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const iconOpen = document.getElementById('menu-icon-open');
+            const iconClose = document.getElementById('menu-icon-close');
+            const body = document.body;
+
+            if(menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+                iconOpen.classList.add('hidden');
+                iconClose.classList.remove('hidden');
+                body.classList.add('menu-open');
+            } else {
+                menu.classList.add('hidden');
+                iconOpen.classList.remove('hidden');
+                iconClose.classList.add('hidden');
+                body.classList.remove('menu-open');
+            }
+        }
+
+        // 5. CALCULADORA DE RIESGO
+        const calcQuestions = [
+            { q: "¿Cuentas con un control estricto de presupuesto vs. ejecución real?", a: ["Sí, al día", "Parcialmente", "No, es un reto actual"] },
+            { q: "¿Tienes visibilidad centralizada del avance físico de la obra?", a: ["Sí, con dashboards", "Solo reportes en PDF/Excel", "No tengo visibilidad clara"] },
+            { q: "¿Utilizas herramientas como drones o recorridos 360 para supervisión remota?", a: ["Sí", "Estamos evaluándolo", "No, supervisión tradicional"] }
+        ];
+        let currentCalcStep = 0;
+
+        function renderCalcStep() {
+            const qContainer = document.getElementById('calc-questions-container');
+            const lContainer = document.getElementById('calc-loading-container');
+            const rContainer = document.getElementById('calc-result-container');
+            
+            // Esconder cargando y resultado por defecto
+            lContainer.classList.add('hidden');
+            rContainer.classList.add('hidden');
+
+            if (currentCalcStep < calcQuestions.length) {
+                qContainer.classList.remove('hidden');
+                document.getElementById('calc-progress').innerText = `Pregunta ${currentCalcStep + 1} de ${calcQuestions.length}`;
+                document.getElementById('calc-question').innerText = calcQuestions[currentCalcStep].q;
+                
+                const answersHtml = calcQuestions[currentCalcStep].a.map((ans, idx) => `
+                    <button onclick="handleCalcAnswer()" class="w-full text-left px-6 py-4 rounded-lg border border-gray-200 hover:border-primary hover:bg-light font-medium transition-colors">
+                        ${ans}
+                    </button>
+                `).join('');
+                document.getElementById('calc-answers').innerHTML = answersHtml;
+            } else {
+                // Mostrar cargando
+                qContainer.classList.add('hidden');
+                lContainer.classList.remove('hidden');
+                trackEvent('Conversion', 'Calculator Complete', 'Generando Resultado');
+                
+                setTimeout(() => {
+                    lContainer.classList.add('hidden');
+                    rContainer.classList.remove('hidden');
+                }, 1500);
+            }
+        }
+
+        function handleCalcAnswer() {
+            trackEvent('Engagement', 'Calculator Step', `Step ${currentCalcStep + 1}`);
+            currentCalcStep++;
+            renderCalcStep();
+        }
+
+        // Iniciar Calculadora
+        renderCalcStep();
+
+        // 6. FORMULARIO DE CONTACTO
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            trackEvent('Conversion', 'Form Submit', 'Contacto General');
+            alert("Mensaje enviado con éxito. Un especialista de VERTICE le contactará en menos de 24 horas.");
+            document.getElementById('contactForm').reset();
+        }
+
+    </script>
+</body>
+</html>
