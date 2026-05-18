@@ -64,6 +64,10 @@
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+        /* Estilos del Carrusel */
+        .carousel-slide { opacity: 0; transition: opacity 0.8s ease-in-out; z-index: 0; pointer-events: none; }
+        .carousel-slide.active { opacity: 1; z-index: 10; pointer-events: auto; }
         
         /* Prevenir scroll cuando el menú móvil está abierto */
         body.menu-open { overflow: hidden; }
@@ -120,34 +124,102 @@
         
         <!-- PÁGINA: INICIO -->
         <div id="page-home" class="page-section active">
-            <!-- Hero -->
-            <section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-dark">
-                <div class="absolute inset-0 z-0 opacity-20">
-                    <div class="absolute inset-0 bg-gradient-to-r from-dark to-transparent z-10"></div>
-                    <img src="https://images.unsplash.com/photo-1541881451970-13e51f5c6e83?q=80&w=2000&auto=format&fit=crop" alt="Proyecto de construcción" class="w-full h-full object-cover"/>
+            
+            <!-- Hero with Carousel -->
+            <section class="relative pt-32 pb-20 lg:pt-36 lg:pb-32 overflow-hidden bg-dark">
+                <!-- Fondo base con gradiente sutil para resaltar texto -->
+                <div class="absolute inset-0 z-0">
+                    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/30 via-dark to-dark"></div>
                 </div>
                 
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                    <div class="max-w-3xl">
-                        <span class="inline-block py-1 px-3 rounded-full bg-secondary text-white text-sm font-semibold mb-6 tracking-wide uppercase">
-                            Ingeniería • Tecnología • Control
-                        </span>
-                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
-                            Tus proyectos bajo control. <br/>
-                            <span class="text-tertiary">Desde el primer día hasta la entrega.</span>
-                        </h1>
-                        <p class="text-lg md:text-xl text-gray-300 mb-10 max-w-2xl leading-relaxed">
-                            Control estratégico para proyectos. 
-                            Más visibilidad, menos riesgos, mejores resultados.
-                        </p>
-                        <div class="flex flex-col sm:flex-row gap-4">
-                            <button class="btn-base btn-primary" onclick="trackEvent('Conversion', 'Click CTA Hero', 'Solicitar Diagnostico'); navigate('contact');">
-                                Solicitar diagnóstico gratuito <i data-lucide="arrow-right" class="ml-2 w-5 h-5"></i>
-                            </button>
-                            <button class="btn-base btn-outline-white" onclick="trackEvent('Navigation', 'Click CTA Hero Secundario', 'Ver Servicios'); navigate('services');">
-                                Ver nuestros servicios
-                            </button>
+                    <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
+                        
+                        <!-- Columna Izquierda: Texto Principal -->
+                        <div class="w-full lg:w-1/2">
+                            <span class="inline-block py-1 px-4 rounded-full bg-secondary/20 text-tertiary border border-secondary/30 text-sm font-semibold mb-6 tracking-wide uppercase">
+                                Ingeniería • Tecnología • Control
+                            </span>
+                            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
+                                Tus proyectos bajo control. <br/>
+                                <span class="text-tertiary">Desde el primer día hasta la entrega.</span>
+                            </h1>
+                            <p class="text-lg md:text-xl text-gray-300 mb-10 max-w-xl leading-relaxed">
+                                Control estratégico para proyectos. 
+                                Más visibilidad, menos riesgos, mejores resultados.
+                            </p>
+                            <div class="flex flex-col sm:flex-row gap-4">
+                                <button class="btn-base btn-primary" onclick="trackEvent('Conversion', 'Click CTA Hero', 'Solicitar Diagnostico'); navigate('contact');">
+                                    Solicitar diagnóstico gratuito <i data-lucide="arrow-right" class="ml-2 w-5 h-5"></i>
+                                </button>
+                                <button class="btn-base btn-outline-white" onclick="trackEvent('Navigation', 'Click CTA Hero Secundario', 'Ver Servicios'); navigate('services');">
+                                    Ver nuestros servicios
+                                </button>
+                            </div>
                         </div>
+
+                        <!-- Columna Derecha: Carrusel Interactivo -->
+                        <div class="w-full lg:w-1/2">
+                            <div class="relative w-full aspect-video sm:aspect-[4/3] rounded-2xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-gray-800 group" id="heroCarousel">
+                                
+                                <!-- Slide 1: Gestión de Obra -->
+                                <div class="carousel-slide active absolute inset-0">
+                                    <img src="https://images.unsplash.com/photo-1541881451970-13e51f5c6e83?q=80&w=1200&auto=format&fit=crop" alt="Gestión de Obra en Construcción" class="w-full h-full object-cover" />
+                                    <div class="absolute inset-0 bg-gradient-to-t from-dark via-dark/20 to-transparent opacity-90"></div>
+                                    <div class="absolute bottom-6 left-6 right-6 text-white">
+                                        <h3 class="text-2xl font-bold mb-1">Gestión Integral</h3>
+                                        <p class="text-gray-300 text-sm">Supervisión en sitio y control de ejecución.</p>
+                                    </div>
+                                </div>
+
+                                <!-- Slide 2: Control de Costos e Ingenieros -->
+                                <div class="carousel-slide absolute inset-0">
+                                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1200&auto=format&fit=crop" alt="Auditoría y Control de Costos" class="w-full h-full object-cover" />
+                                    <div class="absolute inset-0 bg-gradient-to-t from-dark via-dark/20 to-transparent opacity-90"></div>
+                                    <div class="absolute bottom-6 left-6 right-6 text-white">
+                                        <h3 class="text-2xl font-bold mb-1">Auditoría Financiera</h3>
+                                        <p class="text-gray-300 text-sm">Análisis de consumos y control de cubicaciones.</p>
+                                    </div>
+                                </div>
+
+                                <!-- Slide 3: Fotogrametría (Drone) -->
+                                <div class="carousel-slide absolute inset-0">
+                                    <img src="https://images.unsplash.com/photo-1504307651254-35680f356f27?q=80&w=1200&auto=format&fit=crop" alt="Levantamiento con Drones" class="w-full h-full object-cover" />
+                                    <div class="absolute inset-0 bg-gradient-to-t from-dark via-dark/20 to-transparent opacity-90"></div>
+                                    <div class="absolute bottom-6 left-6 right-6 text-white">
+                                        <h3 class="text-2xl font-bold mb-1">Fotogrametría Aérea</h3>
+                                        <p class="text-gray-300 text-sm">Levantamientos topográficos de alta precisión.</p>
+                                    </div>
+                                </div>
+
+                                <!-- Slide 4: Tecnología y 360 -->
+                                <div class="carousel-slide absolute inset-0">
+                                    <img src="https://images.unsplash.com/photo-1664575602276-acd073f104c1?q=80&w=1200&auto=format&fit=crop" alt="Ingenieros usando tecnología para control" class="w-full h-full object-cover" />
+                                    <div class="absolute inset-0 bg-gradient-to-t from-dark via-dark/20 to-transparent opacity-90"></div>
+                                    <div class="absolute bottom-6 left-6 right-6 text-white">
+                                        <h3 class="text-2xl font-bold mb-1">Visualización 360°</h3>
+                                        <p class="text-gray-300 text-sm">Inspección remota y registros históricos documentados.</p>
+                                    </div>
+                                </div>
+
+                                <!-- Controles del Carrusel (Flechas) -->
+                                <button onclick="changeSlide(-1)" class="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 backdrop-blur-md text-white flex items-center justify-center hover:bg-primary transition-colors z-20 opacity-0 group-hover:opacity-100 border border-white/20">
+                                    <i data-lucide="chevron-left" class="w-6 h-6"></i>
+                                </button>
+                                <button onclick="changeSlide(1)" class="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 backdrop-blur-md text-white flex items-center justify-center hover:bg-primary transition-colors z-20 opacity-0 group-hover:opacity-100 border border-white/20">
+                                    <i data-lucide="chevron-right" class="w-6 h-6"></i>
+                                </button>
+                                
+                                <!-- Indicadores (Puntos) -->
+                                <div class="absolute bottom-6 right-6 z-20 flex space-x-2" id="carousel-indicators">
+                                    <button onclick="goToSlide(0)" class="w-2 h-2 rounded-full bg-white transition-all duration-300 w-6" aria-label="Ir a diapositiva 1"></button>
+                                    <button onclick="goToSlide(1)" class="w-2 h-2 rounded-full bg-white/40 hover:bg-white/80 transition-all duration-300" aria-label="Ir a diapositiva 2"></button>
+                                    <button onclick="goToSlide(2)" class="w-2 h-2 rounded-full bg-white/40 hover:bg-white/80 transition-all duration-300" aria-label="Ir a diapositiva 3"></button>
+                                    <button onclick="goToSlide(3)" class="w-2 h-2 rounded-full bg-white/40 hover:bg-white/80 transition-all duration-300" aria-label="Ir a diapositiva 4"></button>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </section>
@@ -670,7 +742,7 @@
 
 
     <!-- ========================================== -->
-    <!-- LOGICA JAVASCRIPT (SPA, Calculadora, UI)   -->
+    <!-- LOGICA JAVASCRIPT (SPA, Calculadora, UI, Carrusel) -->
     <!-- ========================================== -->
     <script>
         // 1. INICIALIZAR ICONOS LUCIDE
@@ -832,6 +904,55 @@
 
         // Iniciar Calculadora
         renderCalcStep();
+
+        // 6. LÓGICA DEL CARRUSEL (HERO)
+        let currentSlideIndex = 0;
+        let slideInterval;
+        const slides = document.querySelectorAll('.carousel-slide');
+        const indicators = document.querySelectorAll('#carousel-indicators button');
+
+        function updateCarousel() {
+            slides.forEach((slide, index) => {
+                slide.classList.remove('active');
+                if (indicators[index]) {
+                    indicators[index].classList.remove('w-6', 'bg-white');
+                    indicators[index].classList.add('bg-white/40');
+                }
+            });
+            
+            slides[currentSlideIndex].classList.add('active');
+            if (indicators[currentSlideIndex]) {
+                indicators[currentSlideIndex].classList.remove('bg-white/40');
+                indicators[currentSlideIndex].classList.add('w-6', 'bg-white');
+            }
+        }
+
+        function changeSlide(direction) {
+            currentSlideIndex += direction;
+            if (currentSlideIndex >= slides.length) currentSlideIndex = 0;
+            if (currentSlideIndex < 0) currentSlideIndex = slides.length - 1;
+            updateCarousel();
+            resetSlideInterval();
+        }
+
+        function goToSlide(index) {
+            currentSlideIndex = index;
+            updateCarousel();
+            resetSlideInterval();
+        }
+
+        function resetSlideInterval() {
+            clearInterval(slideInterval);
+            // Cambiar automáticamente cada 5 segundos
+            slideInterval = setInterval(() => {
+                changeSlide(1);
+            }, 5000);
+        }
+
+        // Iniciar el carrusel al cargar
+        if (slides.length > 0) {
+            resetSlideInterval();
+        }
 
     </script>
 
