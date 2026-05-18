@@ -77,14 +77,7 @@
             <div class="flex justify-between items-center h-20">
                 <!-- Logo -->
                 <div class="flex items-center cursor-pointer" onclick="navigate('home')">
-                    <div class="relative w-10 h-10 mr-3">
-                        <div class="absolute inset-0 bg-gradient-to-tr from-primary to-tertiary opacity-90" style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%)"></div>
-                        <div class="absolute inset-0 bg-dark opacity-40" style="clip-path: polygon(50% 0%, 50% 100%, 100% 100%)"></div>
-                    </div>
-                    <div class="flex flex-col">
-                        <span class="text-2xl font-black text-dark tracking-wider leading-none">VERTICE</span>
-                        <span class="text-[10px] text-secondary font-semibold tracking-[0.2em] leading-tight">MPC GROUP</span>
-                    </div>
+                    <img src="LOGO%20VERTICE.png" alt="VERTICE MPC Group Logo" class="h-10 md:h-14 w-auto object-contain" />
                 </div>
 
                 <!-- Desktop Menu -->
@@ -144,7 +137,7 @@
                             <span class="text-tertiary">Desde el primer día hasta la entrega.</span>
                         </h1>
                         <p class="text-lg md:text-xl text-gray-300 mb-10 max-w-2xl leading-relaxed">
-                            Control estratégico de proyectos para desarrolladores y fiduciarias. 
+                            Control estratégico para proyectos. 
                             Más visibilidad, menos riesgos, mejores resultados.
                         </p>
                         <div class="flex flex-col sm:flex-row gap-4">
@@ -209,7 +202,7 @@
                         </button>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                         <!-- Service 1 -->
                         <div class="bg-white p-8 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 group cursor-pointer" onclick="navigate('contact')">
                             <div class="w-14 h-14 bg-[#E8F2EC] rounded-lg flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-colors">
@@ -239,6 +232,18 @@
                             </div>
                             <h3 class="text-xl font-bold text-dark mb-3">Recorridos Virtuales 360°</h3>
                             <p class="text-gray-600 mb-6">Visualización interactiva para documentación, seguimiento remoto y registro histórico.</p>
+                            <div class="text-secondary font-medium flex items-center group-hover:text-primary">
+                                Saber más <i data-lucide="chevron-right" class="w-4 h-4 ml-1"></i>
+                            </div>
+                        </div>
+                        
+                        <!-- Service 4 -->
+                        <div class="bg-white p-8 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 group cursor-pointer" onclick="navigate('contact')">
+                            <div class="w-14 h-14 bg-[#E8F2EC] rounded-lg flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-colors">
+                                <i data-lucide="dollar-sign" class="w-8 h-8"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-dark mb-3">Control de Costos</h3>
+                            <p class="text-gray-600 mb-6">Validación cuantitativa y financiera del proyecto, identificando desviaciones entre presupuesto y ejecución real.</p>
                             <div class="text-secondary font-medium flex items-center group-hover:text-primary">
                                 Saber más <i data-lucide="chevron-right" class="w-4 h-4 ml-1"></i>
                             </div>
@@ -453,6 +458,32 @@
                             </div>
                         </div>
 
+                        <!-- S4 -->
+                        <div class="flex flex-col md:flex-row-reverse items-center gap-10">
+                            <div class="w-full md:w-1/2">
+                                <div class="aspect-video bg-[#E8F2EC] rounded-2xl flex items-center justify-center relative overflow-hidden">
+                                    <div class="absolute inset-0 bg-gradient-to-br from-primary to-dark opacity-10 mix-blend-multiply"></div>
+                                    <i data-lucide="dollar-sign" class="w-24 h-24 text-primary opacity-20 absolute"></i>
+                                    <span class="text-secondary font-semibold relative z-10">Control Financiero y Auditoría</span>
+                                </div>
+                            </div>
+                            <div class="w-full md:w-1/2">
+                                <div class="flex items-center mb-4">
+                                    <div class="p-3 bg-[#E8F2EC] rounded-lg text-primary mr-4">
+                                        <i data-lucide="dollar-sign" class="w-6 h-6"></i>
+                                    </div>
+                                    <h2 class="text-3xl font-bold text-dark">Control de Costos y Cubicaciones</h2>
+                                </div>
+                                <p class="text-lg text-gray-600 mb-6">Garantizamos la coherencia entre el presupuesto, la planificación y la ejecución en obra, identificando sobrecostos e inconsistencias a través del análisis de cantidades.</p>
+                                <ul class="space-y-3 mb-8">
+                                    <li class="flex items-center text-gray-700"><i data-lucide="check-circle" class="w-5 h-5 text-tertiary mr-3"></i> Validación técnica de cubicaciones y estados de pago</li>
+                                    <li class="flex items-center text-gray-700"><i data-lucide="check-circle" class="w-5 h-5 text-tertiary mr-3"></i> Comparativo de presupuesto vs. cantidades ejecutadas</li>
+                                    <li class="flex items-center text-gray-700"><i data-lucide="check-circle" class="w-5 h-5 text-tertiary mr-3"></i> Control y seguimiento de consumo de materiales</li>
+                                </ul>
+                                <button class="btn-base btn-secondary" onclick="navigate('contact')">Solicitar cotización</button>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </section>
@@ -513,8 +544,30 @@
                                         <input required type="text" class="w-full px-4 py-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent outline-none" placeholder="Ing. Juan Pérez" />
                                     </div>
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">Empresa / Fiduciaria *</label>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Empresa *</label>
                                         <input required type="text" class="w-full px-4 py-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent outline-none" placeholder="Constructora XYZ" />
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Sector *</label>
+                                        <select required class="w-full px-4 py-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent outline-none bg-white">
+                                            <option value="" disabled selected>Seleccione un sector</option>
+                                            <option value="Privado">Privado</option>
+                                            <option value="Público">Público</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Segmento *</label>
+                                        <select required class="w-full px-4 py-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent outline-none bg-white">
+                                            <option value="" disabled selected>Seleccione un segmento</option>
+                                            <option value="Construcción">Construcción</option>
+                                            <option value="Comercial">Comercial</option>
+                                            <option value="Industrial">Industrial</option>
+                                            <option value="Residencial">Residencial</option>
+                                            <option value="Infraestructura">Infraestructura</option>
+                                            <option value="Otro">Otro</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -564,11 +617,8 @@
     <footer class="bg-[#0F171A] text-gray-400 py-12 mt-auto">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
             <div class="md:col-span-1">
-                <div class="flex items-center mb-4 opacity-80">
-                    <div class="relative w-8 h-8 mr-2">
-                        <div class="absolute inset-0 bg-tertiary" style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%)"></div>
-                    </div>
-                    <span class="text-xl font-bold text-white tracking-wider">VERTICE</span>
+                <div class="inline-flex items-center mb-6 cursor-pointer bg-white p-2 rounded-lg" onclick="navigate('home')">
+                    <img src="LOGO%20VERTICE.png" alt="VERTICE MPC Group Logo" class="h-8 md:h-10 w-auto object-contain" />
                 </div>
                 <p class="text-sm mb-4">Soluciones adaptadas a las necesidades, alcances y condiciones particulares de cada proyecto constructivo.</p>
             </div>
@@ -595,11 +645,11 @@
             <div>
                 <h4 class="text-white font-bold mb-4 uppercase text-sm tracking-wider">Síguenos</h4>
                 <div class="flex space-x-4">
-                    <a href="#" class="w-10 h-10 rounded-full bg-dark flex items-center justify-center hover:bg-primary text-white transition-colors">
-                        <i data-lucide="linkedin" class="w-5 h-5"></i>
+                    <a href="https://www.linkedin.com/company/vertice-mpc-group/" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full bg-dark flex items-center justify-center hover:bg-primary text-white transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
                     </a>
-                    <a href="#" class="w-10 h-10 rounded-full bg-dark flex items-center justify-center hover:bg-primary text-white transition-colors">
-                        <i data-lucide="instagram" class="w-5 h-5"></i>
+                    <a href="https://www.instagram.com/verticempcgroup?igsh=aXdteDF0bnpqNjgy" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full bg-dark flex items-center justify-center hover:bg-primary text-white transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
                     </a>
                 </div>
             </div>
@@ -714,11 +764,19 @@
 
         // 5. CALCULADORA DE RIESGO
         const calcQuestions = [
-            { q: "¿Cuentas con un control estricto de presupuesto vs. ejecución real?", a: ["Sí, al día", "Parcialmente", "No, es un reto actual"] },
-            { q: "¿Tienes visibilidad centralizada del avance físico de la obra?", a: ["Sí, con dashboards", "Solo reportes en PDF/Excel", "No tengo visibilidad clara"] },
-            { q: "¿Utilizas herramientas como drones o recorridos 360 para supervisión remota?", a: ["Sí", "Estamos evaluándolo", "No, supervisión tradicional"] }
+            { q: "¿Cuentas con un control estricto de tu presupuesto vs. la ejecución real al día de hoy?", a: ["Sí, al día y automatizado", "Parcialmente, usamos Excel", "No, es un reto actual"] },
+            { q: "¿Tienes visibilidad clara y en tiempo real del avance físico comparado con el cronograma planificado?", a: ["Sí, con indicadores clave", "Solo mediante reportes esporádicos", "No tengo visibilidad clara"] },
+            { q: "¿Cómo gestionas y compartes actualmente la información técnica y documental de la obra?", a: ["Plataforma digital centralizada", "Correos y WhatsApp", "Archivos físicos dispersos"] },
+            { q: "¿Cómo validas actualmente las cubicaciones y los estados de pago de los contratistas?", a: ["Análisis cuantitativo riguroso", "Revisión visual y general", "Dependemos de los datos del contratista"] },
+            { q: "¿Cómo verificas actualmente que lo construido en obra coincide exactamente con los planos y diseños técnicos?", a: ["Mediante levantamientos fotogramétricos y modelos 3D", "Con revisiones topográficas periódicas", "Únicamente con supervisión visual tradicional"] },
+            { q: "¿Llevas un control analítico del consumo de materiales para identificar desperdicios y sobrecostos a tiempo?", a: ["Sí, conciliamos consumo vs. diseño", "A veces llevamos el registro", "No, es muy difícil de controlar"] },
+            { q: "¿Tienen los inversionistas o directores la capacidad de inspeccionar la obra de manera remota e interactiva?", a: ["Sí, mediante recorridos 360°", "Solo con fotos estáticas en reportes", "No, deben ir a la obra presencialmente"] },
+            { q: "¿Mantienes un registro integral (documental y visual) que facilite la liquidación y entrega final del proyecto sin contratiempos?", a: ["Sí, un expediente digital completo y centralizado", "Tenemos documentos, pero están dispersos", "El cierre siempre es un proceso caótico por falta de datos"] },
+            { q: "¿Con qué rapidez logra tu equipo identificar una desviación importante de tiempo o costo en el proyecto?", a: ["Inmediatamente o en pocos días", "Semanas después de que ocurre", "Generalmente al final del proyecto"] },
+            { q: "¿Sientes que tu equipo dedica más tiempo a recopilar y ordenar datos que a tomar decisiones estratégicas?", a: ["No, nuestro flujo es eficiente", "A veces es un proceso pesado", "Sí, la mayor parte del tiempo es operativa"] }
         ];
         let currentCalcStep = 0;
+        let userCalcAnswers = []; // Array para recopilar las respuestas
 
         function renderCalcStep() {
             const qContainer = document.getElementById('calc-questions-container');
@@ -735,7 +793,7 @@
                 document.getElementById('calc-question').innerText = calcQuestions[currentCalcStep].q;
                 
                 const answersHtml = calcQuestions[currentCalcStep].a.map((ans, idx) => `
-                    <button onclick="handleCalcAnswer()" class="w-full text-left px-6 py-4 rounded-lg border border-gray-200 hover:border-primary hover:bg-light font-medium transition-colors">
+                    <button onclick="handleCalcAnswer(${idx})" class="w-full text-left px-6 py-4 rounded-lg border border-gray-200 hover:border-primary hover:bg-light font-medium transition-colors">
                         ${ans}
                     </button>
                 `).join('');
@@ -746,6 +804,12 @@
                 lContainer.classList.remove('hidden');
                 trackEvent('Conversion', 'Calculator Complete', 'Generando Resultado');
                 
+                // --- INICIO GUARDADO EN BASE DE DATOS ---
+                if (window.saveCalcToDatabase) {
+                    window.saveCalcToDatabase(userCalcAnswers);
+                }
+                // --- FIN GUARDADO ---
+
                 setTimeout(() => {
                     lContainer.classList.add('hidden');
                     rContainer.classList.remove('hidden');
@@ -753,8 +817,15 @@
             }
         }
 
-        function handleCalcAnswer() {
+        function handleCalcAnswer(answerIndex) {
             trackEvent('Engagement', 'Calculator Step', `Step ${currentCalcStep + 1}`);
+            
+            // Registrar respuesta elegida en memoria
+            userCalcAnswers.push({
+                pregunta: calcQuestions[currentCalcStep].q,
+                respuesta: calcQuestions[currentCalcStep].a[answerIndex]
+            });
+
             currentCalcStep++;
             renderCalcStep();
         }
@@ -770,6 +841,70 @@
             document.getElementById('contactForm').reset();
         }
 
+    </script>
+
+    <!-- ========================================== -->
+    <!-- BASE DE DATOS FIREBASE (Para Calculadora)  -->
+    <!-- ========================================== -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        let db, auth, appId;
+
+        try {
+            // NOTA PARA GITHUB PAGES: 
+            // Para que los datos se guarden en tu propio entorno en vivo, deberás crear
+            // un proyecto en Firebase (es gratis) y reemplazar la variable "firebaseConfig" con tu clave.
+            // Ejemplo: const firebaseConfig = { apiKey: "AIza...", authDomain: "tu-app.firebaseapp.com", ... };
+            
+            const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
+            appId = typeof __app_id !== 'undefined' ? __app_id : 'vertice-app';
+
+            if (firebaseConfig) {
+                const app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+
+                // Autenticación anónima necesaria por seguridad de Firebase antes de guardar datos
+                const initAuth = async () => {
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } else {
+                        await signInAnonymously(auth);
+                    }
+                };
+                initAuth();
+            }
+        } catch (error) {
+            console.error("Error al configurar Base de Datos Firebase:", error);
+        }
+
+        // Función global para enviar los datos de la calculadora a la BD
+        window.saveCalcToDatabase = async function(respuestas) {
+            if (!db || !auth.currentUser) {
+                console.warn("Base de datos no activa. Simulando registro en consola:");
+                console.log(respuestas);
+                return;
+            }
+
+            try {
+                // Preparamos el paquete de datos con marca de tiempo
+                const dataToSave = {
+                    fechaRegistro: new Date().toISOString(), // Ej: "2026-05-17T22:35:00.000Z"
+                    respuestasSeleccionadas: respuestas
+                };
+                
+                // Guardamos en la colección "evaluaciones_riesgo"
+                const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'evaluaciones_riesgo');
+                await addDoc(colRef, dataToSave);
+                
+                console.log("¡Respuestas registradas exitosamente en la base de datos!");
+            } catch (e) {
+                console.error("Error al registrar respuestas en la nube:", e);
+            }
+        };
     </script>
 </body>
 </html>
