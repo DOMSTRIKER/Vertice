@@ -1,3 +1,3 @@
 # Vertice
 
-https://domstriker.github.io/Vertice/
+https://www.verticempcg.com
